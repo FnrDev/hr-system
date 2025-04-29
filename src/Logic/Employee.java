@@ -17,6 +17,15 @@ public class Employee {
     private int payLevel;
     private Department department;
 
+    public Employee(int employeeId, String firstName, String lastName, char gender, String address, int payLevel){
+        this.employeeId = employeeId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.payLevel = payLevel;
+    }
+
     public int getEmployeeId() {
         return employeeId;
     }
