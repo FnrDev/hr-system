@@ -25,7 +25,7 @@ public class Employee {
         this.address = address;
         this.payLevel = payLevel;
     }
-
+    //Getters
     public int getEmployeeId() {
         return employeeId;
     }
@@ -53,11 +53,8 @@ public class Employee {
     public Department getDepartment() {
         return department;
     }
-
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
-    }
-
+    
+    //Setters
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -80,6 +77,24 @@ public class Employee {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    //Salary Calculation Methods
+    public double calculateAnnualSalary(){
+        double[] payScales = {
+            44245.75, //Level 1
+            48670.32, //Level 2
+            53537.35, //Level 3
+            58891.09, //Level 4
+            64780.20, //Level 5
+            71258.22, //Level 6
+            80946.95, //Level 7
+            96336.34  //Level 8
+        };
+        return payScales[payLevel - 1]; //Get the salary for employee's level
+    }
+    public double calculateFortnightlyPay(){
+        return calculateAnnualSalary() / 26;
     }
     
     
