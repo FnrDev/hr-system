@@ -17,6 +17,19 @@ public class Department {
     private ArrayList<Employee> employees;
     private Employee headOfDepartment;
 
+    // Add no-arg constructor for flexibility (if not already present)
+public Department() {
+    this.employees = new ArrayList<>();
+}
+
+// Add constructor without ID
+public Department(String name, String location) {
+    this.name = name;
+    this.location = location;
+    this.employees = new ArrayList<>();
+}
+
+
     public int getDepartmentId() {
         return departmentId;
     }

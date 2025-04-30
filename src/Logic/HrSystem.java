@@ -10,18 +10,37 @@ import java.util.ArrayList;
  *
  * @author MY PC
  */
-public class System {
-    private ArrayList<Department> departments;
-    private ArrayList<Employee> employees;
+
+ //rename the class to HrSystem to avoid conflict with java.lang.System
+public class HrSystem {
+ 
     private PayReport payreport;
-    
+    private ArrayList<Department> departments = new ArrayList<>();
+    private ArrayList<Employee> employees = new ArrayList<>();
+    private int nextEmployeeId = 1;
+    private int nextDepartmentId = 1;
+
     public void addDepartment(Department department) {
-        
+        if (department == null || department.getName() == null || department.getLocation() == null) {
+            throw new IllegalArgumentException("Invalid department details.");
+        }
+
+        department.setDepartmentId(nextDepartmentId++);
+        departments.add(department);
     }
-    
+
     public void addEmployee(Employee employee) {
-        
+        if (employee == null || employee.getFirstName() == null || employee.getLastName() == null
+                || !(employee.getGender() == 'M' || employee.getGender() == 'F')
+                || employee.getAddress() == null || employee.getPayLevel() < 1 || employee.getPayLevel() > 8) {
+            throw new IllegalArgumentException("Invalid employee details.");
+        }
+
+        employee.setEmployeeId(nextEmployeeId++);
+        employees.add(employee);
     }
+
+
     
     public Department updateDepartment(Department department) {
         
