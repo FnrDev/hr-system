@@ -18,18 +18,18 @@ public class Employee {
     private Department department;
 
     // Remove employeeId from constructor
-public Employee(String firstName, String lastName, char gender, String address, int payLevel) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.gender = gender;
-    this.address = address;
-    this.payLevel = payLevel;
-}
+    public Employee(String firstName, String lastName, char gender, String address, int payLevel) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.address = address;
+        this.payLevel = payLevel;
+    }
 
-// Add setter for employeeId
-public void setEmployeeId(int employeeId) {
-    this.employeeId = employeeId;
-}
+    // Add setter for employeeId
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
+    }
 
     //Getters
     public int getEmployeeId() {
