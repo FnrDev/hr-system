@@ -17,7 +17,6 @@ public class HrSystem {
     private PayReport payreport;
     private ArrayList<Department> departments = new ArrayList<>();
     private ArrayList<Employee> employees = new ArrayList<>();
-    private int nextEmployeeId = 1;
     private int nextDepartmentId = 1;
 
     public void addDepartment(Department department) {
@@ -29,18 +28,10 @@ public class HrSystem {
         departments.add(department);
     }
 
-    public void addEmployee(Employee employee) {
-        if (employee == null || employee.getFirstName() == null || employee.getLastName() == null
-                || !(employee.getGender() == 'M' || employee.getGender() == 'F')
-                || employee.getAddress() == null || employee.getPayLevel() < 1 || employee.getPayLevel() > 8) {
-            throw new IllegalArgumentException("Invalid employee details.");
-        }
-
-        employee.setEmployeeId(nextEmployeeId++);
+    public void addEmployee(String firstName, String lastName, char gender, String address, int payLevel) {
+        Employee employee = new Employee(firstName, lastName, gender, address, payLevel);
         employees.add(employee);
     }
-
-
     
     public Department updateDepartment(Department updated) {
         if (updated == null || updated.getDepartmentId() <= 0) {

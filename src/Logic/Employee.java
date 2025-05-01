@@ -9,7 +9,7 @@ package Logic;
  * @author MY PC
  */
 public class Employee {
-    private int employeeId;
+    private static int employeeId;
     private String firstName;
     private String lastName;
     private char gender;
@@ -24,11 +24,7 @@ public class Employee {
         this.gender = gender;
         this.address = address;
         this.payLevel = payLevel;
-    }
-
-    // Add setter for employeeId
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+        this.employeeId++;
     }
 
     //Getters
