@@ -5,31 +5,36 @@
 package Logic;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  *
  * @author MY PC
  */
-public class Department {
-    private int departmentId;
+public class Department implements Serializable {
+    private final int departmentId;
     private String name;
     private String location;
-    private ArrayList<Employee> employees;
+    private final ArrayList<Employee> employees; //
     private Employee headOfDepartment;
 
-    // Add no-arg constructor for flexibility (if not already present)
-public Department() {
-    this.employees = new ArrayList<>();
-}
-
-// Add constructor without ID
-public Department(String name, String location) {
+// Constractor
+public Department(int departmentId, String name, String location) {
+    if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Department name cannot be null or empty");
+        }
+        if (location == null || location.trim().isEmpty()) {
+            throw new IllegalArgumentException("Location cannot be null or empty");
+        }
+    
+    this.departmentId = departmentId;
     this.name = name;
     this.location = location;
     this.employees = new ArrayList<>();
+    this.headOfDepartment = null; 
 }
-
-
+    
+    //Getters
     public int getDepartmentId() {
         return departmentId;
     }
@@ -43,32 +48,72 @@ public Department(String name, String location) {
     }
 
     public ArrayList<Employee> getEmployees() {
-        return employees;
+        return new ArrayList<>(employees); //
     }
 
     public Employee getHeadOfDepartment() {
         return headOfDepartment;
     }
 
-    public void setDepartmentId(int departmentId) {
-        this.departmentId = departmentId;
-    }
-
+    //Setters
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Department name cannot be null or empty");
+        }
         this.name = name;
     }
 
     public void setLocation(String location) {
+        if (location == null || location.trim().isEmpty()) {
+            throw new IllegalArgumentException("Location cannot be null or empty");
+        }
         this.location = location;
     }
 
-    public void setEmployees(ArrayList<Employee> employees) {
-        this.employees = employees;
+    //department operations
+    public void addEmployee(Employee employee) {
+        if (employee == null) {
+            throw new NullPointerException("Employee cannot be null");
+        }
+        if (!employees.contains(employee)) {
+            employees.add(employee);
+            employee.setDepartment(this);
+        }
     }
 
-    public void setHeadOfDepartment(Employee headOfDepartment) {
-        this.headOfDepartment = headOfDepartment;
+    public void removeEmployee(Employee employee) {
+        if (employee == null) {
+            throw new NullPointerException("Employee cannot be null");
+        }
+        if (employees.remove(employee)) {
+            employee.setDepartment(null); 
+            
+            //clear head position
+            if (employee.equals(headOfDepartment)) {
+                headOfDepartment = null;
+            }
+        }
     }
+
+    public void setHeadOfDepartment(Employee employee) {
+        if (employee != null && !employees.contains(employee)) {
+            throw new IllegalArgumentException("Head must be a department employee");
+        }
+        this.headOfDepartment = employee;
+    }
+
+    //Business operations
+    public int getEmployeeCount() {
+        return employees.size();
+    }
+    
+    public double getTotalDepartmentPay() {
+    double total = 0.0;
+    for (Employee emp : employees) {
+        total += emp.calculateAnnualSalary();
+    }
+    return total;
+}
     
     
 }
