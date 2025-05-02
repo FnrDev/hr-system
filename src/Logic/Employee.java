@@ -3,13 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Logic;
-
+import java.io.Serializable;
 /**
  *
  * @author MY PC
  */
-public class Employee {
-    private static int employeeId;
+public class Employee implements Serializable {
+    private final int employeeId; // static means share the same ID with all employees(I changed it and make it final since ID shouldn't change)
     private String firstName;
     private String lastName;
     private char gender;
@@ -17,14 +17,14 @@ public class Employee {
     private int payLevel;
     private Department department;
 
-    // Remove employeeId from constructor
-    public Employee(String firstName, String lastName, char gender, String address, int payLevel) {
+    // add Id in the parameter
+    public Employee(int employeeId,String firstName, String lastName, char gender, String address, int payLevel) {
+        this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.address = address;
         this.payLevel = payLevel;
-        this.employeeId++;
     }
 
     //Getters
