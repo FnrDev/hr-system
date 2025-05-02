@@ -19,6 +19,21 @@ public class Employee implements Serializable {
 
     // add Id in the parameter
     public Employee(int employeeId,String firstName, String lastName, char gender, String address, int payLevel) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty");
+        }
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be null or empty");
+        }
+        if (gender != 'M' && gender != 'F') {
+            throw new IllegalArgumentException("Gender must be 'M' or 'F'");
+        }
+        if (address == null || address.trim().isEmpty()) {
+            throw new IllegalArgumentException("Address cannot be null or empty");
+        }
+        if (payLevel < 1 || payLevel > 8) {
+            throw new IllegalArgumentException("Pay level must be between 1 and 8");
+        }
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,22 +73,37 @@ public class Employee implements Serializable {
     
     //Setters
     public void setFirstName(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name cannot be null or empty");
+        }
         this.firstName = firstName;
     }
 
     public void setLastName(String lastName) {
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name cannot be null or empty");
+        }
         this.lastName = lastName;
     }
 
     public void setGender(char gender) {
+        if (gender != 'M' && gender != 'F') {
+            throw new IllegalArgumentException("Gender must be 'M' or 'F'");
+        }
         this.gender = gender;
     }
 
     public void setAddress(String address) {
+        if (address == null || address.trim().isEmpty()) {
+            throw new IllegalArgumentException("Address cannot be null or empty");
+        }
         this.address = address;
     }
 
     public void setPayLevel(int payLevel) {
+        if (payLevel < 1 || payLevel > 8) {
+            throw new IllegalArgumentException("Pay level must be between 1 and 8");
+        }
         this.payLevel = payLevel;
     }
 
