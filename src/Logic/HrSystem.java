@@ -3,8 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Logic;
-
 import java.util.ArrayList;
+import java.io.*;
 
 /**
  *
@@ -12,25 +12,33 @@ import java.util.ArrayList;
  */
 
  //rename the class to HrSystem to avoid conflict with java.lang.System
-public class HrSystem {
- 
+public class HrSystem implements Serializable{
     private PayReport payreport;
-    private ArrayList<Department> departments = new ArrayList<>();
+    private ArrayList<Department> departments = new ArrayList<>(); 
     private ArrayList<Employee> employees = new ArrayList<>();
+    private int nextEmployeeId = 1;
     private int nextDepartmentId = 1;
 
-    public void addDepartment(Department department) {
-        if (department == null || department.getName() == null || department.getLocation() == null) {
-            throw new IllegalArgumentException("Invalid department details.");
+    
+    //Department Management
+    public void addDepartment(String name, String location) {
+        Department dept = new Department(name, location);
+        dept.setDepartmentId(nextDepartmentId++); //
+        departments.add(dept);
         }
 
-        department.setDepartmentId(nextDepartmentId++);
-        departments.add(department);
+    public void removeDepartment(int departmentId) {
+        Department dept = findDepartmentById(departmentId);
+        if (dept != null && dept.getEmployeeCount() == 0) {
+            departments.remove(dept);
+        }
     }
 
     public void addEmployee(String firstName, String lastName, char gender, String address, int payLevel) {
-        Employee employee = new Employee(firstName, lastName, gender, address, payLevel);
-        employees.add(employee);
+        Employee emp = new Employee(firstName, lastName, gender, address, payLevel);
+        emp.setEmployeeId(nextEmployeeId++);
+        employees.add(emp); //
+        
     }
     
     public Department updateDepartment(Department updated) {
@@ -128,18 +136,6 @@ public class HrSystem {
             }
         }
         return null; // Not found
-    }
-    
-    public void removeDepartment(Department department) {
-        if (department == null) {
-            throw new IllegalArgumentException("Department is null.");
-        }
-    
-        if (!department.getEmployees().isEmpty()) {
-            throw new IllegalStateException("Cannot delete department with assigned employees.");
-        }
-    
-        departments.removeIf(d -> d.getDepartmentId() == department.getDepartmentId());
     }
     
     
