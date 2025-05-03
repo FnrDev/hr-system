@@ -1,0 +1,129 @@
+import java.util.ArrayList;
+import java.io.*;
+
+public class HR_System1 implements Serializable{
+    private final ArrayList<Department> departments = new ArrayList<>(); 
+    private final ArrayList<Employee> employees = new ArrayList<>();
+    private int nextEmployeeId = 1;
+    private int nextDepartmentId = 1;
+
+    
+    //Department Management
+    //Req2: Add new department
+    public void addDepartment(String name, String location) {              
+        Department dept = new Department(nextDepartmentId++, name, location);
+        departments.add(dept);
+    }
+    //Req3: Add new employee
+    public void addEmployee(String firstName, String lastName, char gender, String address, int payLevel) {
+        Employee emp = new Employee(firstName, lastName, gender, address, payLevel);
+        emp.setEmployeeId(nextEmployeeId++);
+        employees.add(emp); // 
+    }
+    //Req4: Update employee details
+    public void updateEmployee(int employeeId, String firstName, String lastName, char gender, String address, int payLevel) {
+        Employee emp = getEmployeeById(employeeId);
+        if(emp != null) {
+            emp.setFirstName(firstName);
+            emp.setLastName(lastName);
+            emp.setGender(gender);
+            emp.setAddress(address);
+            emp.setPayLevel(payLevel);
+        }
+    }
+    //Req5: Update department details
+    public void updateDepartment(int departmentId, String name, String location) {
+        Department dept = getDepartmentById(departmentId);
+        if(dept != null) {
+            dept.setName(name);
+            dept.setLocation(location);
+        }
+    }
+    //Req6: Assign employee to department
+    public void assignEmployeeToDepartment(int employeeId, int departmentId) {
+        Employee emp = getEmployeeById(employeeId);
+        Department dept = getDepartmentById(departmentId);
+        
+        if(emp != null && dept != null) {                 // Remove from current department
+            Department currentDept = emp.getDepartment(); 
+            if(currentDept != null) {
+                currentDept.removeEmployee(emp);
+            }
+            
+            dept.addEmployee(emp);
+            emp.setDepartment(dept);
+        }
+    }
+    //Req7: set department head
+    public void setDepartmentHead(int departmentId, int employeeId) {
+        Department dept = getDepartmentById(departmentId);
+        Employee emp = getEmployeeById(employeeId);
+        
+        if(dept != null && emp != null && dept.getEmployees().contains(emp)) {
+            dept.setHeadOfDepartment(emp);
+        }
+    }
+    //Req8: Delete department
+    public void deleteDepartment(int departmentId) {
+        Department dept = getDepartmentById(departmentId);
+        if(dept != null && dept.getEmployeeCount() == 0) {
+            departments.remove(dept);
+        }
+    }
+    //Req9: Delete employee
+    public void deleteEmployee(int employeeId) {
+        Employee emp = getEmployeeById(employeeId);
+        if(emp != null) {
+            Department dept = emp.getDepartment();
+            if(dept != null) {
+                dept.removeEmployee(emp);
+                if(dept.getHeadOfDepartment() != null && 
+                   dept.getHeadOfDepartment().getEmployeeId() == employeeId) {
+                    dept.setHeadOfDepartment(null);
+                }
+            }
+            employees.remove(emp);
+        }
+    }
+    //Req10: List department employees
+    
+    //Req11: Generate pay report
+    
+    //Req12: Load system state
+    public void saveData() throws IOException {
+        //code here
+    }
+    public void loadData() throws IOException {
+        //code here    
+    }
+
+    //Req13: Initialize from file
+    public void initializeFromFile(String filePath) {
+        //code here
+    }
+    
+    //Req14: Exit system with save
+    public void exitSystem() {
+        try {
+            saveData();
+        } catch(IOException e) {
+            System.err.println("Error saving data: " + e.getMessage());
+        }
+    }
+    
+    // Helper methods
+    private Employee getEmployeeById(int id) {
+        return employees.stream()
+                .filter(e -> e.getEmployeeId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Department getDepartmentById(int id) {
+        return departments.stream()
+                .filter(d -> d.getDepartmentId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+    
+}
