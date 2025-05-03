@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author MY PC
  */
 public class Employee implements Serializable {
-    private final int employeeId; // static means share the same ID with all employees(I changed it and make it final since ID shouldn't change)
+    private int employeeId; 
     private String firstName;
     private String lastName;
     private char gender;
@@ -18,7 +18,7 @@ public class Employee implements Serializable {
     private Department department;
 
     // add Id in the parameter
-    public Employee(int employeeId,String firstName, String lastName, char gender, String address, int payLevel) {
+    public Employee(String firstName, String lastName, char gender, String address, int payLevel) {
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name cannot be null or empty");
         }
@@ -34,7 +34,7 @@ public class Employee implements Serializable {
         if (payLevel < 1 || payLevel > 8) {
             throw new IllegalArgumentException("Pay level must be between 1 and 8");
         }
-        this.employeeId = employeeId;
+        
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -72,6 +72,10 @@ public class Employee implements Serializable {
     }
     
     //Setters
+    public void setEmployeeId(int id) {
+        this.employeeId = id;
+    }
+    
     public void setFirstName(String firstName) {
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name cannot be null or empty");
