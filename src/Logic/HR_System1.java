@@ -1,3 +1,4 @@
+package Logic;
 import java.util.ArrayList;
 import java.io.*;
 
@@ -86,6 +87,17 @@ public class HR_System1 implements Serializable{
         }
     }
     //Req10: List department employees
+    public ArrayList<Employee> listDepartmentEmployees(Department department) {
+        return department.getEmployees();
+    }
+    public Employee searchEmployeeById(int employeeId) {
+        for (Employee e : employees) {
+            if (e.getEmployeeId() == employeeId) {
+                return e;
+            }
+        }
+        return null; // Not found
+    }
     
     //Req11: Generate pay report
     
