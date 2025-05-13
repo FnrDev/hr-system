@@ -154,6 +154,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Start Empty"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startEmptyBTNActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="initializeBTN">
           <Properties>

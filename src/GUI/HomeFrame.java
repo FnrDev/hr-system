@@ -55,6 +55,11 @@ public class HomeFrame extends javax.swing.JFrame {
 
         startEmptyBTN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         startEmptyBTN.setText("Start Empty");
+        startEmptyBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startEmptyBTNActionPerformed(evt);
+            }
+        });
 
         initializeBTN.setBackground(new java.awt.Color(67, 97, 238));
         initializeBTN.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -136,6 +141,17 @@ public class HomeFrame extends javax.swing.JFrame {
     private void initializeBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_initializeBTNActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_initializeBTNActionPerformed
+
+    private void startEmptyBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startEmptyBTNActionPerformed
+        // Create a new instance of MainLayoutFrame
+        MainLayoutFrame mainFrame = new MainLayoutFrame();
+
+        // Make the new frame visible
+        mainFrame.setVisible(true);
+
+        // Close the current HomeFrame
+        this.dispose();
+    }//GEN-LAST:event_startEmptyBTNActionPerformed
 
     /**
      * @param args the command line arguments
