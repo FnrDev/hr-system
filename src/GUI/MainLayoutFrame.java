@@ -37,7 +37,7 @@ public class MainLayoutFrame extends javax.swing.JFrame {
         navbar = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         navbarTitle = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnExitApp = new javax.swing.JButton();
         PanelContent = new javax.swing.JPanel();
         employeesTabBTN = new javax.swing.JButton();
         departmentsTabBTN = new javax.swing.JButton();
@@ -57,7 +57,12 @@ public class MainLayoutFrame extends javax.swing.JFrame {
         navbarTitle.setForeground(new java.awt.Color(67, 97, 238));
         navbarTitle.setText("HR Department System");
 
-        jButton1.setText("Exit Application");
+        btnExitApp.setText("Exit Application");
+        btnExitApp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitAppActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout navbarLayout = new javax.swing.GroupLayout(navbar);
         navbar.setLayout(navbarLayout);
@@ -69,7 +74,7 @@ public class MainLayoutFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(navbarTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnExitApp, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
         );
         navbarLayout.setVerticalGroup(
@@ -81,7 +86,7 @@ public class MainLayoutFrame extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(navbarTitle)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnExitApp, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9))
         );
 
@@ -195,6 +200,23 @@ public class MainLayoutFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_settingsTabBTN1ActionPerformed
 
+    private void btnExitAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitAppActionPerformed
+        // Show confirmation dialog
+        int confirmed = JOptionPane.showConfirmDialog(
+            this, 
+            "Are you sure you want to exit the application?",
+            "Exit Confirmation",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        // If user confirms, exit the application
+        if (confirmed == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+        // If user selects No, the dialog closes and nothing happens
+    }//GEN-LAST:event_btnExitAppActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -226,9 +248,9 @@ public class MainLayoutFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PanelContent;
+    private javax.swing.JButton btnExitApp;
     private javax.swing.JButton departmentsTabBTN;
     private javax.swing.JButton employeesTabBTN;
-    private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel navbar;
