@@ -2,7 +2,7 @@ package Logic;
 import java.util.ArrayList;
 import java.io.*;
 
-public class HR_System1 implements Serializable{
+public class HR_System implements Serializable {
     private final ArrayList<Department> departments = new ArrayList<>(); 
     private final ArrayList<Employee> employees = new ArrayList<>();
     private int nextEmployeeId = 1;
@@ -122,6 +122,38 @@ public class HR_System1 implements Serializable{
             System.err.println("Error saving data: " + e.getMessage());
         }
     }
+    
+    public String[] getPayLevels() {
+        double[] payScales = {
+            44245.75, //Level 1
+            48670.32, //Level 2
+            53537.35, //Level 3
+            58891.09, //Level 4
+            64780.20, //Level 5
+            71258.22, //Level 6
+            80946.95, //Level 7
+            96336.34  //Level 8
+        };
+
+        // Create a string array of the same length
+        String[] formattedPayLevels = new String[payScales.length];
+
+        // Format currency with commas and 2 decimal places
+        java.text.NumberFormat currencyFormat = java.text.NumberFormat.getCurrencyInstance();
+
+        // Create formatted strings for each pay level
+        for (int i = 0; i < payScales.length; i++) {
+            formattedPayLevels[i] = "Level " + (i + 1) + " - " + currencyFormat.format(payScales[i]);
+        }
+
+        return formattedPayLevels;
+    }
+    
+    public ArrayList<Department> listDepartments() {
+        return departments;
+    }
+
+
     
     // Helper methods
     private Employee getEmployeeById(int id) {

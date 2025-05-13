@@ -18,21 +18,21 @@ public class Department implements Serializable {
     private final ArrayList<Employee> employees; //
     private Employee headOfDepartment;
 
-// Constractor
-public Department(int departmentId, String name, String location) {
-    if (name == null || name.trim().isEmpty()) {
+    // Constractor
+    public Department(int departmentId, String name, String location) {
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Department name cannot be null or empty");
         }
         if (location == null || location.trim().isEmpty()) {
             throw new IllegalArgumentException("Location cannot be null or empty");
         }
-    
-    this.departmentId = departmentId;
-    this.name = name;
-    this.location = location;
-    this.employees = new ArrayList<>();
-    this.headOfDepartment = null; 
-}
+
+        this.departmentId = departmentId;
+        this.name = name;
+        this.location = location;
+        this.employees = new ArrayList<>();
+        this.headOfDepartment = null; 
+    }
     
     //Getters
     public int getDepartmentId() {
@@ -108,12 +108,10 @@ public Department(int departmentId, String name, String location) {
     }
     
     public double getTotalDepartmentPay() {
-    double total = 0.0;
-    for (Employee emp : employees) {
-        total += emp.calculateAnnualSalary();
+        double total = 0.0;
+        for (Employee emp : employees) {
+            total += emp.calculateAnnualSalary();
+        }
+        return total;
     }
-    return total;
-}
-    
-    
 }

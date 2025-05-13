@@ -4,11 +4,17 @@
  */
 package GUI;
 
+import Logic.Department;
+import Logic.HR_System;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author pvppl
  */
 public class AddNewDepartmentDialog extends javax.swing.JDialog {
+    HR_System system = new HR_System();
+
 
     /**
      * Creates new form AddNewDepartment
@@ -28,14 +34,14 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnAddDepartment = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        btnDepartmentCancel = new javax.swing.JButton();
         departmentNameInput = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtDepartmentDesc = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         locationInput = new javax.swing.JTextField();
@@ -47,12 +53,12 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Add New Department");
 
-        jButton1.setBackground(new java.awt.Color(67, 97, 238));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Add Department");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAddDepartment.setBackground(new java.awt.Color(67, 97, 238));
+        btnAddDepartment.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddDepartment.setText("Add Department");
+        btnAddDepartment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAddDepartmentActionPerformed(evt);
             }
         });
 
@@ -61,7 +67,7 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
 
         jLabel3.setText("Department Name");
 
-        jButton2.setText("Cancel");
+        btnDepartmentCancel.setText("Cancel");
 
         departmentNameInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -71,9 +77,9 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
 
         jLabel4.setText("Descreption");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtDepartmentDesc.setColumns(20);
+        txtDepartmentDesc.setRows(5);
+        jScrollPane1.setViewportView(txtDepartmentDesc);
 
         jLabel6.setText("Location");
 
@@ -99,9 +105,9 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(btnDepartmentCancel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnAddDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(budgetInput, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)
@@ -145,17 +151,25 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
                 .addComponent(budgetInput, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAddDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDepartmentCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnAddDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDepartmentActionPerformed
+        String name = departmentNameInput.getText();
+        String description = txtDepartmentDesc.getText();
+        String location = locationInput.getText();
+        double budget = Double.parseDouble(budgetInput.getText());
+        
+        // create department object
+        system.addDepartment(name, location);
+        
+        JOptionPane.showMessageDialog(rootPane, "Successfully added department", "Success", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnAddDepartmentActionPerformed
 
     private void departmentNameInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departmentNameInputActionPerformed
         // TODO add your handling code here:
@@ -213,10 +227,10 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddDepartment;
+    private javax.swing.JButton btnDepartmentCancel;
     private javax.swing.JTextField budgetInput;
     private javax.swing.JTextField departmentNameInput;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -225,7 +239,7 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField locationInput;
+    private javax.swing.JTextArea txtDepartmentDesc;
     // End of variables declaration//GEN-END:variables
 }
