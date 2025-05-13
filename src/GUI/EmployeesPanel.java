@@ -16,6 +16,8 @@ public class EmployeesPanel extends javax.swing.JPanel {
     public EmployeesPanel() {
         initComponents();
     }
+    
+    AddEmployeeDialog dialog = new AddEmployeeDialog(null, true);
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +51,11 @@ public class EmployeesPanel extends javax.swing.JPanel {
         jButton1.setBackground(new java.awt.Color(67, 97, 238));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Add Employee");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(238, 238, 238));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
@@ -173,6 +180,10 @@ public class EmployeesPanel extends javax.swing.JPanel {
     private void employeesSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeesSearchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_employeesSearchActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       dialog.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

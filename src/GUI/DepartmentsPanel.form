@@ -59,6 +59,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Add Department"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addDepartmentBTNActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="employeeTitle1">
       <Properties>

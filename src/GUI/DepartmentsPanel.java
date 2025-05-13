@@ -17,6 +17,8 @@ public class DepartmentsPanel extends javax.swing.JPanel {
         initComponents();
     }
 
+    AddNewDepartmentDialog dialog = new AddNewDepartmentDialog(null, true);
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -45,6 +47,11 @@ public class DepartmentsPanel extends javax.swing.JPanel {
         addDepartmentBTN.setBackground(new java.awt.Color(67, 97, 238));
         addDepartmentBTN.setForeground(new java.awt.Color(255, 255, 255));
         addDepartmentBTN.setText("Add Department");
+        addDepartmentBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addDepartmentBTNActionPerformed(evt);
+            }
+        });
 
         employeeTitle1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         employeeTitle1.setText("Department Managment");
@@ -194,6 +201,10 @@ public class DepartmentsPanel extends javax.swing.JPanel {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void addDepartmentBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDepartmentBTNActionPerformed
+       dialog.setVisible(true);
+    }//GEN-LAST:event_addDepartmentBTNActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
