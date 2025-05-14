@@ -16,9 +16,12 @@ public class Employee implements Serializable {
     private String address;
     private int payLevel;
     private Department department;
+    private String phoneNumber;
+    private String hireDate;
+    private String position;
 
     // add Id in the parameter
-    public Employee(String firstName, String lastName, char gender, String address, int payLevel) {
+    public Employee(String firstName, String lastName, char gender, String address, int payLevel, String phoneNumber, String hireDate, String position) {
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name cannot be null or empty");
         }
@@ -40,6 +43,9 @@ public class Employee implements Serializable {
         this.gender = gender;
         this.address = address;
         this.payLevel = payLevel;
+        this.phoneNumber = phoneNumber;
+        this.hireDate = hireDate;
+        this.position = position;
     }
 
     //Getters
@@ -55,12 +61,24 @@ public class Employee implements Serializable {
         return lastName;
     }
 
+    public String getHireDate() {
+        return hireDate;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
     public char getGender() {
         return gender;
     }
 
     public String getAddress() {
         return address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public int getPayLevel() {

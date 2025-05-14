@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -19,6 +20,8 @@ import java.util.ArrayList;
  */
 public class AddEmployeeDialog extends javax.swing.JDialog {
     private HR_System system;
+    private Employee employeeToEdit; // Add this field
+    private boolean isEditMode; // Add this field to track if we're editing or adding
 
     /**
      * Creates new form AddEmployeeDialog
@@ -31,6 +34,9 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
         // Initialize combo boxes with data
         initializeComboBoxes();
         
+        // Set dialog title for adding
+        setTitle("Add New Employee");
+        
         // Center the dialog on screen
         setLocationRelativeTo(null);
         addWindowListener(new WindowAdapter() {
@@ -38,6 +44,96 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
                 initializeComboBoxes();
             }
         });
+    }
+    
+    public AddEmployeeDialog(java.awt.Frame parent, boolean modal, Employee employeeToEdit) {
+        super(parent, modal);
+        this.system = SystemManager.getInstance().getSystem();
+        this.isEditMode = true; // We are in edit mode
+        this.employeeToEdit = employeeToEdit;
+
+        initComponents();
+
+        // Set dialog title for editing
+        setTitle("Edit Employee");
+
+        // Update text for editing
+        btnSaveEmployee.setText("Update Employee");
+        lblTitle.setText("Update existing employee");
+        lblDescription.setText("Update employee record in the system");
+
+        // IMPORTANT: Initialize combo boxes BEFORE populating fields
+        initializeComboBoxes();
+
+        // THEN populate fields with employee data
+        populateFieldsWithEmployeeData();
+
+        // Center the dialog on screen
+        setLocationRelativeTo(null);
+    }
+    
+    // Add this method to populate fields with employee data
+    private void populateFieldsWithEmployeeData() {
+        if (employeeToEdit != null) {
+            // Populate text fields
+            firstNameInput.setText(employeeToEdit.getFirstName());
+            lastNameInput.setText(employeeToEdit.getLastName());
+            poistionInput.setText(employeeToEdit.getPosition());
+            txtHireDate.setText(employeeToEdit.getHireDate());
+            txtPhone.setText(employeeToEdit.getPhoneNumber());
+            addressInput.setText(employeeToEdit.getAddress());
+
+            // Set gender selection in combo box
+            if (employeeToEdit.getGender() == 'M') {
+                genderBOX.setSelectedItem("Male");
+            } else if (employeeToEdit.getGender() == 'F') {
+                genderBOX.setSelectedItem("Female");
+            }
+
+            // Set department selection in combo box
+            if (employeeToEdit != null) {
+            // Other field population code...
+
+            // DIRECT DEPARTMENT SELECTION APPROACH
+            if (employeeToEdit.getDepartment() != null) {
+                String targetDeptName = employeeToEdit.getDepartment().getName();
+                System.out.println("Attempting to set department to: " + targetDeptName);
+
+                // Force selection by directly setting the model's selected item
+                DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) departmentBOX.getModel();
+
+                // First try: Direct set by value
+                model.setSelectedItem(targetDeptName);
+
+                // Check if it worked
+                if (!targetDeptName.equals(departmentBOX.getSelectedItem())) {
+                    System.out.println("First attempt failed. Current selection: " + departmentBOX.getSelectedItem());
+
+                    // Second try: Find exact match and select by index
+                    for (int i = 0; i < model.getSize(); i++) {
+                        String item = model.getElementAt(i);
+                        if (targetDeptName.equals(item)) {
+                            departmentBOX.setSelectedIndex(i);
+                            System.out.println("Found exact match at index " + i);
+                            break;
+                        }
+                    }
+                }
+
+                // Final check
+                System.out.println("Final department selection: " + departmentBOX.getSelectedItem());
+            }
+            
+            // Set pay level in combo box
+            for (int i = 0; i < paylevelBOX.getItemCount(); i++) {
+                String item = paylevelBOX.getItemAt(i).toString();
+                if (item.startsWith("Level " + employeeToEdit.getPayLevel())) {
+                    paylevelBOX.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+       }
     }
     
     /**
@@ -90,8 +186,8 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        lblTitle = new javax.swing.JLabel();
+        lblDescription = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         firstNameInput = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
@@ -110,16 +206,16 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
         poistionInput = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         txtPhone = new javax.swing.JTextField();
-        btnAddEmployee = new javax.swing.JButton();
+        btnSaveEmployee = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Add New Employee");
+        lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblTitle.setText("Add New Employee");
 
-        jLabel2.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel2.setText("Create a new employee record in the system.  ");
+        lblDescription.setForeground(new java.awt.Color(102, 102, 102));
+        lblDescription.setText("Create a new employee record in the system.  ");
 
         jLabel3.setText("First Name");
 
@@ -186,12 +282,12 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
             }
         });
 
-        btnAddEmployee.setBackground(new java.awt.Color(67, 97, 238));
-        btnAddEmployee.setForeground(new java.awt.Color(255, 255, 255));
-        btnAddEmployee.setText("Add Employee");
-        btnAddEmployee.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveEmployee.setBackground(new java.awt.Color(67, 97, 238));
+        btnSaveEmployee.setForeground(new java.awt.Color(255, 255, 255));
+        btnSaveEmployee.setText("Add Employee");
+        btnSaveEmployee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddEmployeeActionPerformed(evt);
+                btnSaveEmployeeActionPerformed(evt);
             }
         });
 
@@ -221,8 +317,8 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6)
                                     .addComponent(departmentBOX, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1)
+                            .addComponent(lblDescription)
+                            .addComponent(lblTitle)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel3)
@@ -245,7 +341,7 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
                         .addContainerGap()
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAddEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSaveEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -258,9 +354,9 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lastNameInput, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(lblTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(lblDescription)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -296,7 +392,7 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnSaveEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33))
         );
 
@@ -327,52 +423,92 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPhoneActionPerformed
 
-    private void btnAddEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEmployeeActionPerformed
+    private void btnSaveEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveEmployeeActionPerformed
         try {
-            String firstname = firstNameInput.getText();
-            String lastname = lastNameInput.getText();
-            String position = poistionInput.getText();
-
-            // Get the department name from the combo box
-            String departmentName = (String) departmentBOX.getSelectedItem();
-
-            // Find the department ID based on the name
-            int departmentId = getDepartmentIdByName(departmentName);
-
-            // Get gender from combo box (assuming it's a String like "M" or "F")
-            String genderStr = (String) genderBOX.getSelectedItem();
-            char gender = genderStr.charAt(0); // Take first character
-
-            String hireDate = txtHireDate.getText();
-
-            // Get pay level from combo box (assuming it's a String like "Level 1 - $44,245.75")
-            String payLevelStr = (String) paylevelBOX.getSelectedItem();
-            int payLevel = extractPayLevelNumber(payLevelStr);
-
-            String phone = txtPhone.getText();
-            String address = addressInput.getText();
-
-            // Create employee object
-            system.addEmployee(firstname, lastname, gender, address, payLevel);
-
+        // Get data from form fields
+        String firstname = firstNameInput.getText().trim();
+        String lastname = lastNameInput.getText().trim();
+        String position = poistionInput.getText().trim();
+        
+        // Get selected department
+        String departmentName = (String) departmentBOX.getSelectedItem();
+        int departmentId = getDepartmentIdByName(departmentName);
+        
+        // Get gender from combo box
+        String genderStr = (String) genderBOX.getSelectedItem();
+        char gender = genderStr.charAt(0); // Take first character
+        
+        String hireDate = txtHireDate.getText().trim();
+        
+        // Get pay level from combo box
+        String payLevelStr = (String) paylevelBOX.getSelectedItem();
+        int payLevel = extractPayLevelNumber(payLevelStr);
+        
+        String phone = txtPhone.getText().trim();
+        String address = addressInput.getText().trim();
+        
+        // Validate inputs
+        if (firstname.isEmpty() || lastname.isEmpty()) {
+            JOptionPane.showMessageDialog(this, 
+                "Please enter both first and last name", 
+                "Validation Error", 
+                JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (isEditMode && employeeToEdit != null) {
+            // Update existing employee
+            employeeToEdit.setFirstName(firstname);
+            employeeToEdit.setLastName(lastname);
+            employeeToEdit.setGender(gender);
+            employeeToEdit.setAddress(address);
+            employeeToEdit.setPayLevel(payLevel);
+            
+            // Update department assignment if changed
+            Department currentDept = employeeToEdit.getDepartment();
+            int currentDeptId = (currentDept != null) ? currentDept.getDepartmentId() : -1;
+            
+            if (currentDeptId != departmentId) {
+                // Department has changed, reassign employee
+                system.assignEmployeeToDepartment(employeeToEdit.getEmployeeId(), departmentId);
+            }
+            
+            JOptionPane.showMessageDialog(this, 
+                "Employee updated successfully", 
+                "Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            // Create new employee
+            system.addEmployee(firstname, lastname, gender, address, payLevel, phone, hireDate, position);
+            
             // Get the newly created employee's ID
             int employeeId = getLastAddedEmployeeId();
-
+            
             // Assign the employee to the department
             system.assignEmployeeToDepartment(employeeId, departmentId);
-
-            JOptionPane.showMessageDialog(rootPane, "Successfully added employee with id: " + employeeId, 
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
-
+            
+            JOptionPane.showMessageDialog(rootPane, 
+                "Successfully added employee with id: " + employeeId, 
+                "Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+            
             // Clear the form
             clearForm();
-        
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(rootPane, "Error adding employee: " + e.getMessage(), 
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
         }
-    }//GEN-LAST:event_btnAddEmployeeActionPerformed
+        
+        // Close dialog if in edit mode, or if configured to close after adding
+        if (isEditMode) {
+            dispose();
+        }
+        
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(rootPane, 
+            "Error processing employee: " + e.getMessage(), 
+            "Error", 
+            JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+    }//GEN-LAST:event_btnSaveEmployeeActionPerformed
 
     private void departmentBOXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departmentBOXActionPerformed
         // TODO add your handling code here:
@@ -481,15 +617,13 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField addressInput;
-    private javax.swing.JButton btnAddEmployee;
+    private javax.swing.JButton btnSaveEmployee;
     private javax.swing.JComboBox<String> departmentBOX;
     private javax.swing.JTextField firstNameInput;
     private javax.swing.JComboBox<String> genderBOX;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -498,6 +632,8 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JTextField lastNameInput;
+    private javax.swing.JLabel lblDescription;
+    private javax.swing.JLabel lblTitle;
     private javax.swing.JComboBox<String> paylevelBOX;
     private javax.swing.JTextField poistionInput;
     private javax.swing.JTextField txtHireDate;

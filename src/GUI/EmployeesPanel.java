@@ -461,7 +461,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
         // Edit button
         JButton editBtn = new JButton("Edit");
         editBtn.setPreferredSize(new Dimension(70, 30));
-        // editBtn.addActionListener(e -> editEmployee(emp));
+        editBtn.addActionListener(e -> editEmployee(emp));
 
         // Delete button
         JButton deleteBtn = new JButton("Delete");
@@ -477,15 +477,15 @@ public class EmployeesPanel extends javax.swing.JPanel {
         return panel;
     }
     
-//    private void editEmployee(Employee emp) {
-//        // Open edit employee dialog with the selected employee
-//        // You'll need to create or modify your AddEmployeeDialog to accept an Employee for editing
-//        AddEmployeeDialog editDialog = new AddEmployeeDialog(null, true, emp);
-//        editDialog.setVisible(true);
-//        
-//        // Refresh the table after editing
-//        populateEmployeeTable();
-//    }
+    private void editEmployee(Employee emp) {
+        // Open edit employee dialog with the selected employee
+        // You'll need to create or modify your AddEmployeeDialog to accept an Employee for editing
+        AddEmployeeDialog editDialog = new AddEmployeeDialog(null, true, emp);
+        editDialog.setVisible(true);
+        
+        // Refresh the table after editing
+        populateEmployeeTable();
+    }
     
     private void deleteEmployee(Employee emp) {
         // Confirm deletion

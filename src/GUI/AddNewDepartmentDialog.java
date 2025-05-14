@@ -25,6 +25,7 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
         super(parent, modal);
         this.system = SystemManager.getInstance().getSystem();
         initComponents();
+        setLocationRelativeTo(null);
     }
     
     private void setupListeners() {
