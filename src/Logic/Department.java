@@ -17,9 +17,10 @@ public class Department implements Serializable {
     private String location;
     private final ArrayList<Employee> employees; //
     private Employee headOfDepartment;
+    private double budget;
 
     // Constractor
-    public Department(int departmentId, String name, String location) {
+    public Department(int departmentId, String name, String location, double budget) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Department name cannot be null or empty");
         }
@@ -32,6 +33,7 @@ public class Department implements Serializable {
         this.location = location;
         this.employees = new ArrayList<>();
         this.headOfDepartment = null; 
+        this.budget = budget;
     }
     
     //Getters

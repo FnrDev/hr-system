@@ -11,8 +11,9 @@ public class HR_System implements Serializable {
     
     //Department Management
     //Req2: Add new department
-    public void addDepartment(String name, String location) {              
-        Department dept = new Department(nextDepartmentId++, name, location);
+    public void addDepartment(String name, String location, double budget) {              
+        Department dept = new Department(nextDepartmentId++, name, location, budget);
+        System.out.println("Added department");
         departments.add(dept);
     }
     //Req3: Add new employee
@@ -152,7 +153,10 @@ public class HR_System implements Serializable {
     public ArrayList<Department> listDepartments() {
         return departments;
     }
-
+    
+    public ArrayList<Employee> listEmployees() {
+        return employees;
+    }
 
     
     // Helper methods
@@ -170,4 +174,12 @@ public class HR_System implements Serializable {
                 .orElse(null);
     }
     
+    // Add this to your HR_System class
+    public int getLastAddedEmployeeId() {
+        // Return the ID of the last employee in the list
+        if (employees.isEmpty()) {
+            return -1; // No employees
+        }
+        return employees.get(employees.size() - 1).getEmployeeId();
+    }
 }

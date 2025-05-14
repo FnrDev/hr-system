@@ -4,17 +4,74 @@
  */
 package GUI;
 
+import Logic.Department;
+import Logic.Employee;
+import Logic.HR_System;
+import Logic.SystemManager;
+import java.awt.*;
+import java.util.ArrayList;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
 /**
  *
  * @author pvppl
  */
 public class EmployeesPanel extends javax.swing.JPanel {
+    private HR_System system;
+    private JTable employeeTable;
+    private DefaultTableModel tableModel;
+    private JScrollPane tableScrollPane;
 
     /**
      * Creates new form EmployeesPanel
      */
     public EmployeesPanel() {
+        this.system = SystemManager.getInstance().getSystem();
+    
+        // Initialize the table and model
+        employeeTable = new JTable();
+        tableModel = new DefaultTableModel(
+            new Object[][] {},
+            new String[] {"Name", "Position", "Department", "Gender", "PayLevel", "Actions"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 5; // Only make the Actions column editable
+            }
+        };
+        employeeTable.setModel(tableModel);
+        tableScrollPane = new JScrollPane(employeeTable);
+
         initComponents();
+
+        // IMPORTANT: Replace the entire content of jPanel1 with a simple layout
+        jPanel1.removeAll();
+        jPanel1.setLayout(new BorderLayout());
+
+        // Add a header panel at the top
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(employeeTitle, BorderLayout.NORTH);
+        headerPanel.add(jLabel1, BorderLayout.CENTER);
+        jPanel1.add(headerPanel, BorderLayout.NORTH);
+
+        // Add the table scroll pane to the center
+        jPanel1.add(tableScrollPane, BorderLayout.CENTER);
+
+        // Set up the table and populate it
+        setupEmployeeTable();
+        populateEmployeeTable();
+
+        // Force the UI to update
+        jPanel1.revalidate();
+        jPanel1.repaint();
     }
     
     AddEmployeeDialog dialog = new AddEmployeeDialog(null, true);
@@ -29,7 +86,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         employeesSearch = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnAddEmployee = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         employeeTitle = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -48,12 +105,12 @@ public class EmployeesPanel extends javax.swing.JPanel {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(67, 97, 238));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Add Employee");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnAddEmployee.setBackground(new java.awt.Color(67, 97, 238));
+        btnAddEmployee.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddEmployee.setText("Add Employee");
+        btnAddEmployee.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnAddEmployeeActionPerformed(evt);
             }
         });
 
@@ -150,7 +207,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(employeeTitle1)
                 .addGap(884, 884, 884)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnAddEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(45, 45, 45))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -165,7 +222,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(employeeTitle1)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAddEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(employeesSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -178,19 +235,288 @@ public class EmployeesPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void employeesSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeesSearchActionPerformed
-        // TODO add your handling code here:
+        String searchText = employeesSearch.getText().toLowerCase().trim();
+        if (searchText.isEmpty()) {
+            populateEmployeeTable(); // Show all employees if search is empty
+        } else {
+            filterEmployeeTable(searchText);
+        }
     }//GEN-LAST:event_employeesSearchActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       dialog.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnAddEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEmployeeActionPerformed
+       // Create a new dialog instance each time to ensure fresh state
+        AddEmployeeDialog dialog = new AddEmployeeDialog(null, true);
 
+        // Show the dialog and wait for it to close
+        dialog.setVisible(true);
+
+        // After dialog closes, refresh the table
+        populateEmployeeTable();
+
+        // Debug output
+        System.out.println("Table refreshed. Employee count: " + system.listEmployees().size());
+    }//GEN-LAST:event_btnAddEmployeeActionPerformed
+
+    
+    // New methods for table functionality
+    private void setupEmployeeTable() {
+        // Set up the table model with column names
+        // Make sure the table is visible
+        employeeTable.setVisible(true);
+        tableScrollPane.setVisible(true);
+
+        // Set preferred size for the table scroll pane to make it wider
+        tableScrollPane.setPreferredSize(new Dimension(1100, 400));
+
+        // Set custom renderer for the Actions column
+        employeeTable.getColumnModel().getColumn(5).setCellRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, 
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof JPanel) {
+                    return (JPanel) value;
+                }
+                // Return a default component if value is not a JPanel
+                JPanel emptyPanel = new JPanel();
+                return emptyPanel;
+            }
+        });
+
+        // Set custom editor for the Actions column
+        employeeTable.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, 
+                    boolean isSelected, int row, int column) {
+                if (value instanceof JPanel) {
+                    return (JPanel) value;
+                }
+                // Return a default component if value is not a JPanel
+                JPanel emptyPanel = new JPanel();
+                return emptyPanel;
+            }
+        });
+
+        // Set column widths - increase the Actions column width
+        employeeTable.getColumnModel().getColumn(0).setPreferredWidth(150); // Name
+        employeeTable.getColumnModel().getColumn(1).setPreferredWidth(150); // Position
+        employeeTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Department
+        employeeTable.getColumnModel().getColumn(3).setPreferredWidth(80);  // Gender
+        employeeTable.getColumnModel().getColumn(4).setPreferredWidth(100); // PayLevel
+        employeeTable.getColumnModel().getColumn(5).setPreferredWidth(200); // Actions - increased width
+
+        // Prevent column resizing by the user to maintain our custom widths
+        employeeTable.getTableHeader().setResizingAllowed(false);
+
+        // Set row height to accommodate buttons - increase if needed
+        employeeTable.setRowHeight(40);
+
+        // Force the table to repaint
+        employeeTable.revalidate();
+        employeeTable.repaint();
+    }
+    
+    private void populateEmployeeTable() {
+        debugSystemData();
+       // Clear existing rows
+        tableModel.setRowCount(0);
+
+        // Get employees from the system
+        ArrayList<Employee> employees = system.listEmployees();
+
+        System.out.println("Populating table with " + employees.size() + " employees");
+
+        // Add each employee to the table
+        for (Employee emp : employees) {
+            System.out.println("Adding to table: " + emp.getFirstName() + " " + emp.getLastName());
+            addEmployeeToTable(emp);
+        }
+
+        System.out.println("Table now has " + tableModel.getRowCount() + " rows");
+        // Force UI refresh
+        forceTableRefresh();
+    }
+    
+    private void debugSystemData() {
+        ArrayList<Employee> employees = system.listEmployees();
+        System.out.println("DEBUG: System has " + employees.size() + " employees");
+        for (Employee emp : employees) {
+            System.out.println("DEBUG: Employee: " + emp.getEmployeeId() + " - " + 
+                              emp.getFirstName() + " " + emp.getLastName());
+        }
+    }
+    
+    private void forceTableRefresh() {
+        // Force the table to repaint
+        tableModel.fireTableDataChanged();
+        employeeTable.revalidate();
+        employeeTable.repaint();
+
+        // Force the container to repaint
+        tableScrollPane.revalidate();
+        tableScrollPane.repaint();
+        jPanel1.revalidate();
+        jPanel1.repaint();
+        this.revalidate();
+        this.repaint();
+    }
+    
+    private void filterEmployeeTable(String searchText) {
+        // Clear existing rows
+        tableModel.setRowCount(0);
+        
+        // Get employees from the system
+        ArrayList<Employee> employees = system.listEmployees();
+        
+        // Add matching employees to the table
+        for (Employee emp : employees) {
+            String fullName = emp.getFirstName() + " " + emp.getLastName();
+            Department dept = emp.getDepartment();
+            String deptName = (dept != null) ? dept.getName() : "";
+            
+            if (fullName.toLowerCase().contains(searchText) || 
+                deptName.toLowerCase().contains(searchText)) {
+                addEmployeeToTable(emp);
+            }
+        }
+    }
+    
+    private void addEmployeeToTable(Employee emp) {
+        if (emp == null) {
+            System.out.println("Warning: Attempted to add null employee to table");
+            return;
+        }
+        
+        // Add this important fix to prevent buttons from disappearing
+        employeeTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Force repaint when selection changes
+                employeeTable.repaint();
+            }
+        });
+        
+        // Also add a mouse listener to handle clicks properly
+        employeeTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = employeeTable.rowAtPoint(evt.getPoint());
+                int col = employeeTable.columnAtPoint(evt.getPoint());
+
+                if (col == 5 && row >= 0) { // Actions column
+                    // Get the component at that cell
+                    TableCellRenderer renderer = employeeTable.getCellRenderer(row, col);
+                    Component comp = employeeTable.prepareRenderer(renderer, row, col);
+
+                    if (comp instanceof JPanel) {
+                        JPanel panel = (JPanel) comp;
+                        // Calculate relative click position within the cell
+                        Rectangle cellRect = employeeTable.getCellRect(row, col, false);
+                        int x = evt.getX() - cellRect.x;
+                        int y = evt.getY() - cellRect.y;
+
+                        // Forward the click to the panel
+                        panel.dispatchEvent(new java.awt.event.MouseEvent(
+                            panel, evt.getID(), evt.getWhen(), evt.getModifiers(),
+                            x, y, evt.getClickCount(), evt.isPopupTrigger(), evt.getButton()
+                        ));
+                    }
+                }
+            }
+        });
+    
+        // Get department name (if assigned)
+        String departmentName = "Not Assigned";
+        if (emp.getDepartment() != null) {
+            departmentName = emp.getDepartment().getName();
+        }
+
+        // Get pay level as formatted string
+        String payLevelStr = "Level " + emp.getPayLevel();
+
+        // Create action buttons panel
+        JPanel actionPanel = createActionButtons(emp);
+
+        // Create row data
+        Object[] row = {
+            emp.getFirstName() + " " + emp.getLastName(),
+            "Employee", // You may need to adjust this if you have position information
+            departmentName,
+            String.valueOf(emp.getGender()),
+            payLevelStr,
+            actionPanel
+        };
+
+        // Add row to table
+        tableModel.addRow(row);
+
+        System.out.println("Added row to table: " + emp.getFirstName() + " " + emp.getLastName());
+
+        // Force the table to repaint
+        employeeTable.revalidate();
+        employeeTable.repaint();
+    }
+    
+    private JPanel createActionButtons(Employee emp) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+    
+        // Edit button
+        JButton editBtn = new JButton("Edit");
+        editBtn.setPreferredSize(new Dimension(70, 30));
+        // editBtn.addActionListener(e -> editEmployee(emp));
+
+        // Delete button
+        JButton deleteBtn = new JButton("Delete");
+        deleteBtn.setPreferredSize(new Dimension(70, 30));
+        deleteBtn.addActionListener(e -> deleteEmployee(emp));
+
+        panel.add(editBtn);
+        panel.add(deleteBtn);
+
+        // Make sure the panel itself has enough width
+        panel.setPreferredSize(new Dimension(160, 35));
+
+        return panel;
+    }
+    
+//    private void editEmployee(Employee emp) {
+//        // Open edit employee dialog with the selected employee
+//        // You'll need to create or modify your AddEmployeeDialog to accept an Employee for editing
+//        AddEmployeeDialog editDialog = new AddEmployeeDialog(null, true, emp);
+//        editDialog.setVisible(true);
+//        
+//        // Refresh the table after editing
+//        populateEmployeeTable();
+//    }
+    
+    private void deleteEmployee(Employee emp) {
+        // Confirm deletion
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete employee: " + emp.getFirstName() + " " + emp.getLastName() + "?",
+            "Confirm Deletion",
+            JOptionPane.YES_NO_OPTION
+        );
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Delete the employee
+            system.deleteEmployee(emp.getEmployeeId());
+            
+            // Refresh the table
+            populateEmployeeTable();
+            
+            JOptionPane.showMessageDialog(
+                this,
+                "Employee deleted successfully",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddEmployee;
     private javax.swing.JLabel employeeTitle;
     private javax.swing.JLabel employeeTitle1;
     private javax.swing.JTextField employeesSearch;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

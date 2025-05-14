@@ -4,16 +4,18 @@
  */
 package GUI;
 
-import Logic.Department;
 import Logic.HR_System;
-import javax.swing.JOptionPane;
+import Logic.SystemManager;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 /**
  *
  * @author pvppl
  */
 public class AddNewDepartmentDialog extends javax.swing.JDialog {
-    HR_System system = new HR_System();
+    HR_System system;
 
 
     /**
@@ -21,7 +23,24 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
      */
     public AddNewDepartmentDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        this.system = SystemManager.getInstance().getSystem();
         initComponents();
+    }
+    
+    private void setupListeners() {
+        btnAddDepartment.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                btnAddDepartmentActionPerformed(evt);
+            }
+        });
+        
+        btnCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                dispose();
+            }
+        });
     }
 
     /**
@@ -160,15 +179,59 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDepartmentActionPerformed
-        String name = departmentNameInput.getText();
-        String description = txtDepartmentDesc.getText();
-        String location = locationInput.getText();
-        double budget = Double.parseDouble(budgetInput.getText());
-        
-        // create department object
-        system.addDepartment(name, location);
-        
-        JOptionPane.showMessageDialog(rootPane, "Successfully added department", "Success", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            String name = departmentNameInput.getText().trim();
+            String description = txtDepartmentDesc.getText().trim();
+            String location = locationInput.getText().trim();
+            
+            // Validate inputs
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Department name cannot be empty", 
+                        "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (location.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Location cannot be empty", 
+                        "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Validate budget is a number
+            double budget = 0;
+            try {
+                budget = Double.parseDouble(budgetInput.getText().trim());
+                if (budget < 0) {
+                    JOptionPane.showMessageDialog(this, "Budget cannot be negative", 
+                            "Validation Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Budget must be a valid number", 
+                        "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Add department to the system
+            system.addDepartment(name, location, budget);
+            
+            // Debug output
+            System.out.println("Added department: " + name);
+            System.out.println("Total departments now: " + system.listDepartments().size());
+            
+            JOptionPane.showMessageDialog(this, "Department added successfully", 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+            
+            // Clear the form for next entry
+            clearForm();
+            
+            // Optionally close the dialog
+            // dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error adding department: " + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_btnAddDepartmentActionPerformed
 
     private void departmentNameInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departmentNameInputActionPerformed
@@ -183,6 +246,16 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_budgetInputActionPerformed
 
+    
+    private void clearForm() {
+        departmentNameInput.setText("");
+        txtDepartmentDesc.setText("");
+        locationInput.setText("");
+        budgetInput.setText("");
+        departmentNameInput.requestFocus();
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -225,7 +298,7 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
             }
         });
     }
-
+    private JButton btnCancel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDepartment;
     private javax.swing.JButton btnDepartmentCancel;

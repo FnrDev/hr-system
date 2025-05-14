@@ -5,8 +5,11 @@
 package GUI;
 
 import Logic.Department;
+import Logic.SystemManager;
 import Logic.Employee;
 import Logic.HR_System;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 
@@ -15,13 +18,14 @@ import java.util.ArrayList;
  * @author pvppl
  */
 public class AddEmployeeDialog extends javax.swing.JDialog {
-    HR_System system = new HR_System();
+    private HR_System system;
 
     /**
      * Creates new form AddEmployeeDialog
      */
     public AddEmployeeDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        this.system = SystemManager.getInstance().getSystem();
         initComponents();
         
         // Initialize combo boxes with data
@@ -29,6 +33,11 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
         
         // Center the dialog on screen
         setLocationRelativeTo(null);
+        addWindowListener(new WindowAdapter() {
+            public void windowOpened(WindowEvent e) {
+                initializeComboBoxes();
+            }
+        });
     }
     
     /**
@@ -42,6 +51,9 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
         // Get departments from the system
         ArrayList<Department> departments = system.listDepartments();
         System.out.println("Number of departments: " + departments.size());
+
+        // First add a "Select Department" option
+        departmentBOX.addItem("-- Select Department --");
 
         // Add departments to the combo box
         for (Department dept : departments) {
@@ -316,31 +328,115 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_txtPhoneActionPerformed
 
     private void btnAddEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddEmployeeActionPerformed
-        String firstname = firstNameInput.getText();
-        String lastname = lastNameInput.getText();
-        String position = poistionInput.getText();
-        int department = (int) departmentBOX.getSelectedItem();
-        char gender = (char) genderBOX.getSelectedItem();
-        String hireDate = txtHireDate.getText();
-        int paylevel = (int) paylevelBOX.getSelectedItem();
-        String phone = txtPhone.getText();
-        String address = addressInput.getText();
+        try {
+            String firstname = firstNameInput.getText();
+            String lastname = lastNameInput.getText();
+            String position = poistionInput.getText();
+
+            // Get the department name from the combo box
+            String departmentName = (String) departmentBOX.getSelectedItem();
+
+            // Find the department ID based on the name
+            int departmentId = getDepartmentIdByName(departmentName);
+
+            // Get gender from combo box (assuming it's a String like "M" or "F")
+            String genderStr = (String) genderBOX.getSelectedItem();
+            char gender = genderStr.charAt(0); // Take first character
+
+            String hireDate = txtHireDate.getText();
+
+            // Get pay level from combo box (assuming it's a String like "Level 1 - $44,245.75")
+            String payLevelStr = (String) paylevelBOX.getSelectedItem();
+            int payLevel = extractPayLevelNumber(payLevelStr);
+
+            String phone = txtPhone.getText();
+            String address = addressInput.getText();
+
+            // Create employee object
+            system.addEmployee(firstname, lastname, gender, address, payLevel);
+
+            // Get the newly created employee's ID
+            int employeeId = getLastAddedEmployeeId();
+
+            // Assign the employee to the department
+            system.assignEmployeeToDepartment(employeeId, departmentId);
+
+            JOptionPane.showMessageDialog(rootPane, "Successfully added employee with id: " + employeeId, 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            // Clear the form
+            clearForm();
         
-        // create employee object
-        Employee employee = new Employee(firstname, lastname, gender, address, paylevel);
-        // create system class to use assign department method
-        HR_System system = new HR_System();
-        
-        // assign the employee to the department
-        system.assignEmployeeToDepartment(employee.getEmployeeId(), department);
-        
-        JOptionPane.showMessageDialog(rootPane, "Successfully added employee with id: " + employee.getEmployeeId(), "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Error adding employee: " + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_btnAddEmployeeActionPerformed
 
     private void departmentBOXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departmentBOXActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_departmentBOXActionPerformed
+    
+    
+    
+    // Helper method to get department ID by name
+    private int getDepartmentIdByName(String departmentName) {
+        // Skip if it's the default "Select Department" item
+        if (departmentName == null || departmentName.contains("Select Department") || 
+            departmentName.contains("No departments")) {
+            throw new IllegalArgumentException("Please select a valid department");
+        }
 
+        ArrayList<Department> departments = system.listDepartments();
+        for (Department dept : departments) {
+            if (dept.getName().equals(departmentName)) {
+                return dept.getDepartmentId();
+            }
+        }
+        throw new IllegalArgumentException("Department not found: " + departmentName);
+    }
+
+    // Helper method to extract pay level number from formatted string
+    private int extractPayLevelNumber(String payLevelStr) {
+        // Example input: "Level 3 - $53,537.35"
+        if (payLevelStr == null || !payLevelStr.startsWith("Level")) {
+            throw new IllegalArgumentException("Invalid pay level format");
+        }
+
+        // Extract the number after "Level " and before " -"
+        String levelPart = payLevelStr.substring(6, payLevelStr.indexOf(" -"));
+        try {
+            return Integer.parseInt(levelPart);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Could not parse pay level: " + payLevelStr);
+        }
+    }
+
+    // Helper method to get the ID of the last added employee
+    private int getLastAddedEmployeeId() {
+        // This depends on how your system tracks employee IDs
+        // If system.addEmployee() returns the ID, use that instead
+        // This is just a placeholder - you need to implement this based on your system
+        return system.getLastAddedEmployeeId(); // You'll need to add this method to HR_System
+    }
+
+    // Helper method to clear the form
+    private void clearForm() {
+        firstNameInput.setText("");
+        lastNameInput.setText("");
+        poistionInput.setText("");
+        departmentBOX.setSelectedIndex(0);
+        genderBOX.setSelectedIndex(0);
+        txtHireDate.setText("");
+        paylevelBOX.setSelectedIndex(0);
+        txtPhone.setText("");
+        addressInput.setText("");
+        firstNameInput.requestFocus();
+    }
+    
+    
+    
     /**
      * @param args the command line arguments
      */
