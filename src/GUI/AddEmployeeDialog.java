@@ -94,46 +94,46 @@ public class AddEmployeeDialog extends javax.swing.JDialog {
             if (employeeToEdit != null) {
             // Other field population code...
 
-            // DIRECT DEPARTMENT SELECTION APPROACH
-            if (employeeToEdit.getDepartment() != null) {
-                String targetDeptName = employeeToEdit.getDepartment().getName();
-                System.out.println("Attempting to set department to: " + targetDeptName);
+                // DIRECT DEPARTMENT SELECTION APPROACH
+                if (employeeToEdit.getDepartment() != null) {
+                    String targetDeptName = employeeToEdit.getDepartment().getName();
+                    System.out.println("Attempting to set department to: " + targetDeptName);
 
-                // Force selection by directly setting the model's selected item
-                DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) departmentBOX.getModel();
+                    // Force selection by directly setting the model's selected item
+                    DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) departmentBOX.getModel();
 
-                // First try: Direct set by value
-                model.setSelectedItem(targetDeptName);
+                    // First try: Direct set by value
+                    model.setSelectedItem(targetDeptName);
 
-                // Check if it worked
-                if (!targetDeptName.equals(departmentBOX.getSelectedItem())) {
-                    System.out.println("First attempt failed. Current selection: " + departmentBOX.getSelectedItem());
+                    // Check if it worked
+                    if (!targetDeptName.equals(departmentBOX.getSelectedItem())) {
+                        System.out.println("First attempt failed. Current selection: " + departmentBOX.getSelectedItem());
 
-                    // Second try: Find exact match and select by index
-                    for (int i = 0; i < model.getSize(); i++) {
-                        String item = model.getElementAt(i);
-                        if (targetDeptName.equals(item)) {
-                            departmentBOX.setSelectedIndex(i);
-                            System.out.println("Found exact match at index " + i);
-                            break;
+                        // Second try: Find exact match and select by index
+                        for (int i = 0; i < model.getSize(); i++) {
+                            String item = model.getElementAt(i);
+                            if (targetDeptName.equals(item)) {
+                                departmentBOX.setSelectedIndex(i);
+                                System.out.println("Found exact match at index " + i);
+                                break;
+                            }
                         }
                     }
+
+                    // Final check
+                    System.out.println("Final department selection: " + departmentBOX.getSelectedItem());
                 }
 
-                // Final check
-                System.out.println("Final department selection: " + departmentBOX.getSelectedItem());
-            }
-            
-            // Set pay level in combo box
-            for (int i = 0; i < paylevelBOX.getItemCount(); i++) {
-                String item = paylevelBOX.getItemAt(i).toString();
-                if (item.startsWith("Level " + employeeToEdit.getPayLevel())) {
-                    paylevelBOX.setSelectedIndex(i);
-                    break;
+                // Set pay level in combo box
+                for (int i = 0; i < paylevelBOX.getItemCount(); i++) {
+                    String item = paylevelBOX.getItemAt(i).toString();
+                    if (item.startsWith("Level " + employeeToEdit.getPayLevel())) {
+                        paylevelBOX.setSelectedIndex(i);
+                        break;
+                    }
                 }
             }
         }
-       }
     }
     
     /**
