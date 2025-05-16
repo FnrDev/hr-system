@@ -138,12 +138,9 @@ public class HR_System implements Serializable {
         // Create a string array of the same length
         String[] formattedPayLevels = new String[payScales.length];
 
-        // Format currency with commas and 2 decimal places
-        java.text.NumberFormat currencyFormat = java.text.NumberFormat.getCurrencyInstance();
-
         // Create formatted strings for each pay level
         for (int i = 0; i < payScales.length; i++) {
-            formattedPayLevels[i] = "Level " + (i + 1) + " - " + currencyFormat.format(payScales[i]);
+            formattedPayLevels[i] = "Level " + (i + 1) + " - " + "BD" + payScales[i];
         }
 
         return formattedPayLevels;
