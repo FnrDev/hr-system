@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author MY PC
  */
 public class Employee implements Serializable {
-    private int employeeId; 
+    private final int employeeId; //made final
     private String firstName;
     private String lastName;
     private char gender;
@@ -21,7 +21,7 @@ public class Employee implements Serializable {
     private String position;
 
     // add Id in the parameter
-    public Employee(String firstName, String lastName, char gender, String address, int payLevel, String phoneNumber, String hireDate, String position) {
+    public Employee(int employeeId, String firstName, String lastName, char gender, String address, int payLevel, String phoneNumber, String hireDate, String position) {
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name cannot be null or empty");
         }
@@ -90,9 +90,10 @@ public class Employee implements Serializable {
     }
     
     //Setters
-    public void setEmployeeId(int id) {
+    //remove it
+   /* public void setEmployeeId(int id) { 
         this.employeeId = id;
-    }
+    } */
     
     public void setFirstName(String firstName) {
         if (firstName == null || firstName.trim().isEmpty()) {
@@ -145,8 +146,12 @@ public class Employee implements Serializable {
             80946.95, //Level 7
             96336.34  //Level 8
         };
-        return payScales[payLevel - 1]; //Get the salary for employee's level
+        if (payLevel < 1 || payLevel > 8) {
+            throw new IllegalStateException("Corrupt pay level: " + payLevel);    //add pay level check
+        }
+        return payScales[payLevel - 1];  //Get the salary for employee's level
     }
+    
     public double calculateFortnightlyPay(){
         return calculateAnnualSalary() / 26;
     }

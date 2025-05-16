@@ -28,7 +28,9 @@ public class Department implements Serializable {
         if (location == null || location.trim().isEmpty()) {
             throw new IllegalArgumentException("Location cannot be null or empty");
         }
-
+        if (budget < 0) {
+            throw new IllegalArgumentException("Budget cannot be negative"); //validation for negative budgets
+        }
         this.departmentId = departmentId;
         this.name = name;
         this.description = description;
@@ -128,5 +130,12 @@ public class Department implements Serializable {
             total += emp.calculateAnnualSalary();
         }
         return total;
+    }
+    // Budget control
+    public void adjustBudget(double amount) {
+        if (this.budget + amount < 0) {
+            throw new IllegalStateException("Not enough fundst");
+        }
+        this.budget += amount;
     }
 }
