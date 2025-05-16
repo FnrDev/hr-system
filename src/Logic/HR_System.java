@@ -18,8 +18,7 @@ public class HR_System implements Serializable {
     }
     //Req3: Add new employee
     public void addEmployee(String firstName, String lastName, char gender, String address, int payLevel, String phoneNumber, String hireDate, String position) {
-        Employee emp = new Employee(firstName, lastName, gender, address, payLevel, phoneNumber, hireDate, position);
-        emp.setEmployeeId(nextEmployeeId++);
+        Employee emp = new Employee(nextEmployeeId++, firstName, lastName, gender, address, payLevel, phoneNumber, hireDate, position);
         employees.add(emp); // 
     }
     //Req4: Update employee details

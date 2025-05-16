@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author MY PC
  */
 public class Employee implements Serializable {
-    private final int employeeId; //made final
+    private final int employeeId = 0; //made final
     private String firstName;
     private String lastName;
     private char gender;
