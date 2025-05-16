@@ -11,8 +11,8 @@ public class HR_System implements Serializable {
     
     //Department Management
     //Req2: Add new department
-    public void addDepartment(String name, String location, double budget) {              
-        Department dept = new Department(nextDepartmentId++, name, location, budget);
+    public void addDepartment(String name, String description, String location, double budget) {              
+        Department dept = new Department(nextDepartmentId++, name, description, location, budget);
         System.out.println("Added department");
         departments.add(dept);
     }

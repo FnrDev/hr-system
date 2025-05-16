@@ -15,12 +15,13 @@ public class Department implements Serializable {
     private final int departmentId;
     private String name;
     private String location;
+    private String description;
     private final ArrayList<Employee> employees; //
     private Employee headOfDepartment;
     private double budget;
 
     // Constractor
-    public Department(int departmentId, String name, String location, double budget) {
+    public Department(int departmentId, String name, String description, String location, double budget) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Department name cannot be null or empty");
         }
@@ -30,6 +31,7 @@ public class Department implements Serializable {
 
         this.departmentId = departmentId;
         this.name = name;
+        this.description = description;
         this.location = location;
         this.employees = new ArrayList<>();
         this.headOfDepartment = null; 
@@ -40,6 +42,11 @@ public class Department implements Serializable {
     public int getDepartmentId() {
         return departmentId;
     }
+
+    public String getDescription() {
+        return description;
+    }
+ 
 
     public String getName() {
         return name;
@@ -82,6 +89,12 @@ public class Department implements Serializable {
             employee.setDepartment(this);
         }
     }
+
+    public double getBudget() {
+        return budget;
+    }
+    
+    
 
     public void removeEmployee(Employee employee) {
         if (employee == null) {

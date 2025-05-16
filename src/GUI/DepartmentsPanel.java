@@ -3,21 +3,327 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package GUI;
+import Logic.Department;
+import Logic.Employee;
+import Logic.HR_System;
+import Logic.SystemManager;
+import java.awt.*;
+import java.util.ArrayList;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
  * @author pvppl
  */
 public class DepartmentsPanel extends javax.swing.JPanel {
+    private HR_System system;
+    private JTable departmentTable;
+    private DefaultTableModel tableModel;
+    private JScrollPane tableScrollPane;
+    private AddNewDepartmentDialog dialog;
 
     /**
      * Creates new form DepartmentsPanel
      */
     public DepartmentsPanel() {
+        this.system = SystemManager.getInstance().getSystem();
+    
+        // Debug: Check if system is properly initialized
+        if (system == null) {
+            System.err.println("ERROR: HR_System is null!");
+        } else {
+            System.out.println("HR_System initialized successfully");
+        }
+
+        // Initialize components first
         initComponents();
+
+        // Initialize the table and model
+        tableModel = new DefaultTableModel(
+            new Object[][] {},
+            new String[] {"Name", "Location", "Budget", "Department Head", "Employees", "Actions"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 5; // Only make the Actions column editable
+            }
+        };
+
+        departmentTable = new JTable(tableModel);
+        tableScrollPane = new JScrollPane(departmentTable);
+
+        // Initialize the dialog
+        dialog = new AddNewDepartmentDialog(null, true);
+        dialog.setParentPanel(this);
+
+        // Remove the example panel
+        this.remove(jPanel3);
+
+        // Use a simple BorderLayout
+        this.setLayout(new BorderLayout());
+
+        // Create a header panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(employeeTitle1, BorderLayout.WEST);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(addDepartmentBTN);
+        headerPanel.add(buttonPanel, BorderLayout.EAST);
+
+        // Add components to this panel
+        this.add(headerPanel, BorderLayout.NORTH);
+        this.add(tableScrollPane, BorderLayout.CENTER);
+
+        // Set up the table
+        setupDepartmentTable();
+
+        // Load departments
+        loadDepartments();
+
+        // Force the UI to update
+        this.revalidate();
+        this.repaint();
+    }
+    
+    // New methods for table functionality
+    private void setupDepartmentTable() {
+        // Make sure the table is visible
+        departmentTable.setVisible(true);
+        tableScrollPane.setVisible(true);
+
+        // Set preferred size for the table scroll pane
+        tableScrollPane.setPreferredSize(new Dimension(1100, 400));
+
+        // Set custom renderer for the Actions column
+        departmentTable.getColumnModel().getColumn(5).setCellRenderer(new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, 
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                if (value instanceof JPanel) {
+                    return (JPanel) value;
+                }
+                // Return a default component if value is not a JPanel
+                JPanel emptyPanel = new JPanel();
+                return emptyPanel;
+            }
+        });
+
+        // Set custom editor for the Actions column
+        departmentTable.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JTextField()) {
+            @Override
+            public Component getTableCellEditorComponent(JTable table, Object value, 
+                    boolean isSelected, int row, int column) {
+                if (value instanceof JPanel) {
+                    return (JPanel) value;
+                }
+                // Return a default component if value is not a JPanel
+                JPanel emptyPanel = new JPanel();
+                return emptyPanel;
+            }
+        });
+
+        // Set column widths
+        departmentTable.getColumnModel().getColumn(0).setPreferredWidth(200); // Name
+        departmentTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Location
+        departmentTable.getColumnModel().getColumn(2).setPreferredWidth(100); // Budget
+        departmentTable.getColumnModel().getColumn(3).setPreferredWidth(200); // Department Head
+        departmentTable.getColumnModel().getColumn(4).setPreferredWidth(100); // Employees
+        departmentTable.getColumnModel().getColumn(5).setPreferredWidth(200); // Actions
+
+        // Prevent column resizing by the user to maintain our custom widths
+        departmentTable.getTableHeader().setResizingAllowed(false);
+
+        // Set row height to accommodate buttons
+        departmentTable.setRowHeight(40);
+
+        // Add mouse listener to handle button clicks
+        departmentTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = departmentTable.rowAtPoint(evt.getPoint());
+                int col = departmentTable.columnAtPoint(evt.getPoint());
+
+                if (col == 5 && row >= 0) { // Actions column
+                    // Get the component at that cell
+                    TableCellRenderer renderer = departmentTable.getCellRenderer(row, col);
+                    Component comp = departmentTable.prepareRenderer(renderer, row, col);
+
+                    if (comp instanceof JPanel) {
+                        JPanel panel = (JPanel) comp;
+                        // Calculate relative click position within the cell
+                        Rectangle cellRect = departmentTable.getCellRect(row, col, false);
+                        int x = evt.getX() - cellRect.x;
+                        int y = evt.getY() - cellRect.y;
+
+                        // Forward the click to the panel
+                        panel.dispatchEvent(new java.awt.event.MouseEvent(
+                            panel, evt.getID(), evt.getWhen(), evt.getModifiers(),
+                            x, y, evt.getClickCount(), evt.isPopupTrigger(), evt.getButton()
+                        ));
+                    }
+                }
+            }
+        });
+
+        // Force the table to repaint
+        departmentTable.revalidate();
+        departmentTable.repaint();
+    }
+    
+    private void loadDepartments() {
+        try {
+            // Clear existing rows
+            tableModel.setRowCount(0);
+
+            // Get all departments from the system
+            ArrayList<Department> departments = system.listDepartments();
+
+            System.out.println("Loading departments. Count: " + departments.size());
+
+            if (departments.isEmpty()) {
+                System.out.println("No departments found in the system.");
+                // Add a dummy row to show the table is working
+//                tableModel.addRow(new Object[]{"No departments found", "", "", "", "", ""});
+            } else {
+                System.out.println("Departments found:");
+                for (Department dept : departments) {
+                    System.out.println(" - " + dept.getName() + " (ID: " + dept.getDepartmentId()+ ")");
+                    addDepartmentToTable(dept);
+                }
+            }
+
+            // Force UI refresh
+            forceTableRefresh();
+        } catch (Exception e) {
+            System.err.println("Error loading departments: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private void forceTableRefresh() {
+        // Force the table to repaint
+        tableModel.fireTableDataChanged();
+        departmentTable.revalidate();
+        departmentTable.repaint();
+
+        // Force the container to repaint
+        tableScrollPane.revalidate();
+        tableScrollPane.repaint();
+        this.revalidate();
+        this.repaint();
+    }
+    
+    private void addDepartmentToTable(Department dept) {
+        try {
+        if (dept == null) {
+            System.out.println("Warning: Attempted to add null department to table");
+            return;
+        }
+        
+            // Get department head name (if assigned)
+            String headName = "Not Assigned";
+            if (dept.getHeadOfDepartment()!= null) {
+                headName = dept.getHeadOfDepartment().getFirstName() + " " + dept.getHeadOfDepartment().getLastName();
+            }
+
+            // Format budget as currency
+            String budgetStr = "$" + String.format("%,.2f", dept.getBudget());
+
+            // Get employee count
+            int employeeCount = dept.getEmployees().size();
+
+            // Create action buttons panel
+            JPanel actionPanel = createActionButtons(dept);
+
+            // Create row data
+            Object[] row = {
+                dept.getName(),
+                dept.getLocation(),
+                budgetStr,
+                headName,
+                String.valueOf(employeeCount),
+                actionPanel
+            };
+
+            // Add row to table
+            tableModel.addRow(row);
+
+            System.out.println("Added row to table: " + dept.getName());
+        } catch (Exception e) {
+            System.err.println("Error adding department to table: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private JPanel createActionButtons(Department dept) {
+        // Use GridLayout instead of FlowLayout for more consistent button sizing
+        JPanel panel = new JPanel(new GridLayout(1, 3, 5, 0));
+
+        // View Employees button
+        JButton viewBtn = new JButton("View");
+        viewBtn.setPreferredSize(new Dimension(70, 30));
+        viewBtn.addActionListener(e -> viewDepartmentEmployees(dept));
+
+        // Edit button
+        JButton editBtn = new JButton("Edit");
+        editBtn.setPreferredSize(new Dimension(70, 30));
+        editBtn.addActionListener(e -> editDepartment(dept));
+
+        // Delete button
+        JButton deleteBtn = new JButton("Delete");
+        deleteBtn.setPreferredSize(new Dimension(70, 30));
+        deleteBtn.addActionListener(e -> deleteDepartment(dept));
+
+        panel.add(viewBtn);
+        panel.add(editBtn);
+        panel.add(deleteBtn);
+
+        // Make sure the panel has enough height
+        panel.setPreferredSize(new Dimension(220, 35));
+
+        return panel;
+    }
+    
+    // Action methods for the buttons
+    private void viewDepartmentEmployees(Department dept) {
+        // Implement view employees functionality
+        JOptionPane.showMessageDialog(this, "Viewing employees for " + dept.getName());
+        // You might want to navigate to an employee view or show a dialog
     }
 
-    AddNewDepartmentDialog dialog = new AddNewDepartmentDialog(null, true);
+    private void editDepartment(Department dept) {
+        // Configure the dialog for editing
+        dialog.setDepartmentToEdit(dept);
+        dialog.setParentPanel(this);
+        dialog.setVisible(true);
+    }
+    
+    private void deleteDepartment(Department dept) {
+        int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to delete the department: " + dept.getName() + "?",
+            "Confirm Delete",
+            JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            system.deleteDepartment(dept.getDepartmentId());
+            JOptionPane.showMessageDialog(this, "Department deleted successfully");
+            loadDepartments(); // Refresh the list
+        }
+    }
+    
+    public void refreshDepartments() {
+        loadDepartments();
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -40,9 +346,9 @@ public class DepartmentsPanel extends javax.swing.JPanel {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnViewEmployees = new javax.swing.JButton();
+        btnDeleteDepartment = new javax.swing.JButton();
+        btnEditDepartment = new javax.swing.JButton();
 
         addDepartmentBTN.setBackground(new java.awt.Color(67, 97, 238));
         addDepartmentBTN.setForeground(new java.awt.Color(255, 255, 255));
@@ -83,22 +389,21 @@ public class DepartmentsPanel extends javax.swing.JPanel {
 
         jLabel9.setText("19");
 
-        jButton1.setBackground(new java.awt.Color(67, 97, 238));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setIcon(new javax.swing.ImageIcon("C:\\Users\\pvppl\\Desktop\\hr-system\\src\\GUI\\People-Linear-16px.png")); // NOI18N
-        jButton1.setText("View Employees");
+        btnViewEmployees.setBackground(new java.awt.Color(67, 97, 238));
+        btnViewEmployees.setForeground(new java.awt.Color(255, 255, 255));
+        btnViewEmployees.setText("View Employees");
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Trash-Linear-24px.png"))); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnDeleteDepartment.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Trash-Linear-24px.png"))); // NOI18N
+        btnDeleteDepartment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnDeleteDepartmentActionPerformed(evt);
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Edit2-Linear-24px (1).png"))); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnEditDepartment.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GUI/Edit2-Linear-24px (1).png"))); // NOI18N
+        btnEditDepartment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnEditDepartmentActionPerformed(evt);
             }
         });
 
@@ -119,13 +424,13 @@ public class DepartmentsPanel extends javax.swing.JPanel {
                             .addComponent(jLabel1)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnViewEmployees, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnEditDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnDeleteDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))))
@@ -157,11 +462,11 @@ public class DepartmentsPanel extends javax.swing.JPanel {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(30, 30, 30)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnViewEmployees, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(btnDeleteDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(btnEditDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -194,25 +499,28 @@ public class DepartmentsPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnDeleteDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteDepartmentActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnDeleteDepartmentActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnEditDepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDepartmentActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnEditDepartmentActionPerformed
 
     private void addDepartmentBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDepartmentBTNActionPerformed
-       dialog.setVisible(true);
+        dialog.resetForNewDepartment();
+        dialog.setParentPanel(this);
+        dialog.setVisible(true);
+        refreshDepartments();
     }//GEN-LAST:event_addDepartmentBTNActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addDepartmentBTN;
+    private javax.swing.JButton btnDeleteDepartment;
+    private javax.swing.JButton btnEditDepartment;
+    private javax.swing.JButton btnViewEmployees;
     private javax.swing.JLabel employeeTitle1;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

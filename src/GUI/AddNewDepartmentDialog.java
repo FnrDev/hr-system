@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Logic.Department;
 import Logic.HR_System;
 import Logic.SystemManager;
 import javax.swing.*;
@@ -16,6 +17,9 @@ import java.awt.event.*;
  */
 public class AddNewDepartmentDialog extends javax.swing.JDialog {
     HR_System system;
+    private Department departmentToEdit;
+    private boolean isEditMode = false;
+    private DepartmentsPanel parentPanel;
 
 
     /**
@@ -25,18 +29,51 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
         super(parent, modal);
         this.system = SystemManager.getInstance().getSystem();
         initComponents();
+        setupListeners();
         setLocationRelativeTo(null);
     }
     
-    private void setupListeners() {
-        btnAddDepartment.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                btnAddDepartmentActionPerformed(evt);
-            }
-        });
+    /**
+     * Set the parent panel for refreshing after changes
+     */
+    public void setParentPanel(DepartmentsPanel parentPanel) {
+        this.parentPanel = parentPanel;
+    }
+    
+    /**
+     * Set up the dialog for editing an existing department
+     */
+    public void setDepartmentToEdit(Department department) {
+        this.departmentToEdit = department;
+        this.isEditMode = true;
         
-        btnCancel.addActionListener(new ActionListener() {
+        // Update dialog title and button text
+        jLabel1.setText("Edit Department");
+        jLabel2.setText("Update department information in the system.");
+        btnAddDepartment.setText("Save Changes");
+        
+        // Populate fields with department data
+        departmentNameInput.setText(department.getName());
+        txtDepartmentDesc.setText(department.getDescription());
+        locationInput.setText(department.getLocation());
+        budgetInput.setText(String.valueOf(department.getBudget()));
+    }
+    
+    public void resetForNewDepartment() {
+        this.departmentToEdit = null;
+        this.isEditMode = false;
+        
+        // Reset dialog title and button text
+        jLabel1.setText("Add New Department");
+        jLabel2.setText("Create a new department in the system.");
+        btnAddDepartment.setText("Add Department");
+        
+        // Clear all fields
+        clearForm();
+    }
+    
+    private void setupListeners() {
+        btnDepartmentCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 dispose();
@@ -192,6 +229,12 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
                 return;
             }
             
+            if (description.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Department description cannot be empty", 
+                        "Validation Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
             if (location.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Location cannot be empty", 
                         "Validation Error", JOptionPane.ERROR_MESSAGE);
@@ -214,7 +257,7 @@ public class AddNewDepartmentDialog extends javax.swing.JDialog {
             }
             
             // Add department to the system
-            system.addDepartment(name, location, budget);
+            system.addDepartment(name, description, location, budget);
             
             // Debug output
             System.out.println("Added department: " + name);
