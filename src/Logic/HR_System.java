@@ -108,7 +108,7 @@ public class HR_System implements Serializable {
         oos.writeObject(this);
        }
     }
-    public void loadData() throws IOException {
+    public static HR_System loadData() throws IOException {
         try (ObjectInputStream ois = new ObjectInputStream(
         new FileInputStream("hr_system.dat"))) {
         return (HR_System) ois.readObject();
