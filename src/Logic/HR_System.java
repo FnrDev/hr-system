@@ -103,15 +103,20 @@ public class HR_System implements Serializable {
     
     //Req12: Load system state
     public void saveData() throws IOException {
-        //code here
+       try (ObjectOutputStream oos = new ObjectOutputStream(
+        new FileOutputStream("hr_system.dat"))) {
+        oos.writeObject(this);
+       }
     }
     public void loadData() throws IOException {
-        //code here    
+        try (ObjectInputStream ois = new ObjectInputStream(
+        new FileInputStream("hr_system.dat"))) {
+        return (HR_System) ois.readObject();
+        }    
     }
 
     //Req13: Initialize from file
     public void initializeFromFile(String filePath) {
-        //code here
     }
     
     //Req14: Exit system with save
@@ -170,7 +175,6 @@ public class HR_System implements Serializable {
                 .orElse(null);
     }
     
-    // Add this to your HR_System class
     public int getLastAddedEmployeeId() {
         // Return the ID of the last employee in the list
         if (employees.isEmpty()) {
