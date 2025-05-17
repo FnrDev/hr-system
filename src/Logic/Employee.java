@@ -1,15 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Logic;
 import java.io.Serializable;
-/**
- *
- * @author MY PC
- */
+
 public class Employee implements Serializable {
-    private final int employeeId = 0; //made final
+    // Fix: Change from hardcoded 0 to a field initialized in constructor
+    private final int employeeId;
     private String firstName;
     private String lastName;
     private char gender;
@@ -20,7 +14,6 @@ public class Employee implements Serializable {
     private String hireDate;
     private String position;
 
-    // add Id in the parameter
     public Employee(int employeeId, String firstName, String lastName, char gender, String address, int payLevel, String phoneNumber, String hireDate, String position) {
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name cannot be null or empty");
@@ -38,6 +31,8 @@ public class Employee implements Serializable {
             throw new IllegalArgumentException("Pay level must be between 1 and 8");
         }
         
+        // Fix: Initialize employeeId from parameter
+        this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -48,7 +43,8 @@ public class Employee implements Serializable {
         this.position = position;
     }
 
-    //Getters
+    // Rest of the class remains the same
+    // Getters
     public int getEmployeeId() {
         return employeeId;
     }
@@ -90,11 +86,6 @@ public class Employee implements Serializable {
     }
     
     //Setters
-    //remove it
-   /* public void setEmployeeId(int id) { 
-        this.employeeId = id;
-    } */
-    
     public void setFirstName(String firstName) {
         if (firstName == null || firstName.trim().isEmpty()) {
             throw new IllegalArgumentException("First name cannot be null or empty");
@@ -147,14 +138,12 @@ public class Employee implements Serializable {
             96336.34  //Level 8
         };
         if (payLevel < 1 || payLevel > 8) {
-            throw new IllegalStateException("Corrupt pay level: " + payLevel);    //add pay level check
+            throw new IllegalStateException("Corrupt pay level: " + payLevel);
         }
-        return payScales[payLevel - 1];  //Get the salary for employee's level
+        return payScales[payLevel - 1];
     }
     
     public double calculateFortnightlyPay(){
         return calculateAnnualSalary() / 26;
     }
-    
-    
 }

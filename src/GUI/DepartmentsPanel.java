@@ -18,7 +18,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-
+import javax.swing.SwingUtilities;
+import java.awt.Frame;
 /**
  *
  * @author pvppl
@@ -30,6 +31,11 @@ public class DepartmentsPanel extends javax.swing.JPanel {
     private JScrollPane tableScrollPane;
     private AddNewDepartmentDialog dialog;
 
+    private Department department;
+    private DepartmentsPanel parentPanel;
+    private JTable employeeTable;
+    private JScrollPane scrollPane;
+    
     /**
      * Creates new form DepartmentsPanel
      */
@@ -221,47 +227,47 @@ public class DepartmentsPanel extends javax.swing.JPanel {
         this.repaint();
     }
     
-    private void addDepartmentToTable(Department dept) {
-        try {
+private void addDepartmentToTable(Department dept) {
+    try {
         if (dept == null) {
             System.out.println("Warning: Attempted to add null department to table");
             return;
         }
         
-            // Get department head name (if assigned)
-            String headName = "Not Assigned";
-            if (dept.getHeadOfDepartment()!= null) {
-                headName = dept.getHeadOfDepartment().getFirstName() + " " + dept.getHeadOfDepartment().getLastName();
-            }
-
-            // Format budget as currency
-            String budgetStr = "$" + String.format("%,.2f", dept.getBudget());
-
-            // Get employee count
-            int employeeCount = dept.getEmployees().size();
-
-            // Create action buttons panel
-            JPanel actionPanel = createActionButtons(dept);
-
-            // Create row data
-            Object[] row = {
-                dept.getName(),
-                dept.getLocation(),
-                budgetStr,
-                headName,
-                String.valueOf(employeeCount),
-                actionPanel
-            };
-
-            // Add row to table
-            tableModel.addRow(row);
-
-            System.out.println("Added row to table: " + dept.getName());
-        } catch (Exception e) {
-            System.err.println("Error adding department to table: " + e.getMessage());
-            e.printStackTrace();
+        // Get department head name (if assigned)
+        String headName = "Not Assigned";
+        if (dept.getHeadOfDepartment() != null) {
+            headName = dept.getHeadOfDepartment().getFirstName() + " " + dept.getHeadOfDepartment().getLastName();
         }
+
+        // Format budget as currency
+        String budgetStr = "$" + String.format("%,.2f", dept.getBudget());
+
+        // Get employee count - this will correctly show the number of employees
+        int employeeCount = dept.getEmployees().size();
+
+        // Create action buttons panel
+        JPanel actionPanel = createActionButtons(dept);
+
+        // Create row data
+        Object[] row = {
+            dept.getName(),
+            dept.getLocation(),
+            budgetStr,
+            headName,
+            String.valueOf(employeeCount), // Shows employee count
+            actionPanel
+        };
+
+        // Add row to table
+        tableModel.addRow(row);
+
+        System.out.println("Added row to table: " + dept.getName() + " with " + employeeCount + " employees");
+    } catch (Exception e) {
+        System.err.println("Error adding department to table: " + e.getMessage());
+        e.printStackTrace();
     }
+}
     
     private JPanel createActionButtons(Department dept) {
         // Use GridLayout instead of FlowLayout for more consistent button sizing
@@ -293,11 +299,32 @@ public class DepartmentsPanel extends javax.swing.JPanel {
     }
     
     // Action methods for the buttons
-    private void viewDepartmentEmployees(Department dept) {
-        // Implement view employees functionality
-        JOptionPane.showMessageDialog(this, "Viewing employees for " + dept.getName());
-        // You might want to navigate to an employee view or show a dialog
+    
+private void viewDepartmentEmployees(Department dept) {
+    try {
+        DepartmentEmployeesDialog dialog = new DepartmentEmployeesDialog(
+            javax.swing.SwingUtilities.getWindowAncestor(this) instanceof Frame ? 
+            (Frame) javax.swing.SwingUtilities.getWindowAncestor(this) : null, 
+            true
+        );
+        
+        // Set department and parent panel
+        dialog.setDepartment(dept);
+        dialog.setParentPanel(this);
+        
+        // Show dialog
+        dialog.setVisible(true);
+    } catch (Exception e) {
+        System.err.println("Error showing department employees: " + e.getMessage());
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(
+            this, 
+            "Error showing department employees: " + e.getMessage(),
+            "Error",
+            JOptionPane.ERROR_MESSAGE
+        );
     }
+}
 
     private void editDepartment(Department dept) {
         // Configure the dialog for editing
