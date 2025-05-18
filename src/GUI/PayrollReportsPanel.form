@@ -22,7 +22,7 @@
                   <Group type="102" attributes="0">
                       <Component id="employeeTitle1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="928" max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" pref="158" max="-2" attributes="0"/>
+                      <Component id="btnDownloadReport" min="-2" pref="158" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   <Component id="jPanel3" alignment="1" min="-2" pref="171" max="-2" attributes="0"/>
@@ -37,7 +37,7 @@
               <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="employeeTitle1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jButton1" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="btnDownloadReport" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
@@ -49,7 +49,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnDownloadReport">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ee" green="61" red="43" type="rgb"/>
@@ -60,7 +60,7 @@
         <Property name="text" type="java.lang.String" value="Download Report"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDownloadReportActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
@@ -86,7 +86,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="employeeTitle" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="672" max="32767" attributes="0"/>
-                          <Component id="jComboBox1" min="-2" pref="209" max="-2" attributes="0"/>
+                          <Component id="comboDepartments" min="-2" pref="209" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
@@ -102,7 +102,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jComboBox1" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
+                      <Component id="comboDepartments" alignment="1" min="-2" pref="32" max="-2" attributes="0"/>
                       <Component id="employeeTitle" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -132,7 +132,7 @@
             <Property name="text" type="java.lang.String" value="Generate and view payroll reports for all employees or by department.   "/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JComboBox" name="jComboBox1">
+        <Component class="javax.swing.JComboBox" name="comboDepartments">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="4">

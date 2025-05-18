@@ -195,6 +195,7 @@ public class MainLayoutFrame extends javax.swing.JFrame {
 
     private void payrollTabBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payrollTabBTNActionPerformed
         System.out.println("Payroll Reports button clicked");
+        payrollReportsPanel.refreshDepartmentsComboBox();
         if (contentPanel != null) {
             contentPanel.removeAll();
             contentPanel.add(payrollReportsPanel, BorderLayout.CENTER);

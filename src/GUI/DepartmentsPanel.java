@@ -241,7 +241,7 @@ private void addDepartmentToTable(Department dept) {
         }
 
         // Format budget as currency
-        String budgetStr = "$" + String.format("%,.2f", dept.getBudget());
+        String budgetStr = "BD" + String.format("%,.2f", dept.getBudget());
 
         // Get employee count - this will correctly show the number of employees
         int employeeCount = dept.getEmployees().size();

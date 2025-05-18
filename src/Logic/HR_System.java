@@ -185,4 +185,63 @@ public class HR_System implements Serializable {
         }
         return employees.get(employees.size() - 1).getEmployeeId();
     }
+    
+    public void generatePayrollReport() throws IOException {
+        // 1. Open the file for writing
+        try (PrintWriter writer = new PrintWriter(new FileWriter("payroll.txt"))) {
+            double companyTotal = 0.0;
+
+            writer.println("Payroll Report (Fortnightly)");
+            writer.println("=".repeat(40));
+            writer.println();
+
+            for (Department dept : departments) {
+                writer.println("Department: " + dept.getName());
+                writer.println("-".repeat(40));
+                double deptTotal = 0.0;
+
+                ArrayList<Employee> deptEmployees = dept.getEmployees();
+                if (deptEmployees.isEmpty()) {
+                    writer.println("  No employees in this department.");
+                } else {
+                    for (Employee emp : deptEmployees) {
+                        double annualSalary = getAnnualSalaryForPayLevel(emp.getPayLevel());
+                        double fortnightlyPay = annualSalary / 26.0;
+                        deptTotal += fortnightlyPay;
+
+                        writer.printf("  %-20s (ID: %d)  Pay: BD%.2f%n",
+                            emp.getFirstName() + " " + emp.getLastName(),
+                            emp.getEmployeeId(),
+                            fortnightlyPay
+                        );
+                    }
+                }
+                writer.printf("  Department Total: BD%.2f%n", deptTotal);
+                writer.println();
+                companyTotal += deptTotal;
+            }
+
+            writer.println("=".repeat(40));
+            writer.printf("Company Total Payroll This Fortnight: BD%.2f%n", companyTotal);
+        }
+    }
+
+    // Helper method to get annual salary for a pay level
+    public double getAnnualSalaryForPayLevel(int payLevel) {
+        double[] payScales = {
+            44245.75, // Level 1
+            48670.32, // Level 2
+            53537.35, // Level 3
+            58891.09, // Level 4
+            64780.20, // Level 5
+            71258.22, // Level 6
+            80946.95, // Level 7
+            96336.34  // Level 8
+        };
+        if (payLevel >= 1 && payLevel <= payScales.length) {
+            return payScales[payLevel - 1];
+        } else {
+            return 0.0; // Or throw an exception if invalid
+        }
+    }
 }
