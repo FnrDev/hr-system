@@ -4,13 +4,14 @@
  */
 package Logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author MY PC
  */
-public class PayReport {
+public class PayReport implements Serializable {
     private int reportId;
     private double totalPayroll;
     private ArrayList<Employee> employees;

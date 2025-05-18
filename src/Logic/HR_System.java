@@ -103,17 +103,19 @@ public class HR_System implements Serializable {
     
     //Req12: Load system state
     public void saveData() throws IOException {
-       try (ObjectOutputStream oos = new ObjectOutputStream(
-        new FileOutputStream("hr_system.dat"))) {
-        oos.writeObject(this);
-       }
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("hr_system.dat"))) {
+            oos.writeObject(this);
+        }
     }
-    public static HR_System loadData() throws IOException {
+    
+    public static HR_System loadData() throws IOException, ClassNotFoundException {
         try (ObjectInputStream ois = new ObjectInputStream(
-        new FileInputStream("hr_system.dat"))) {
-        return (HR_System) ois.readObject();
-        }    
+                new FileInputStream("hr_system.dat"))) {
+            return (HR_System) ois.readObject();
+        }
     }
+
 
     //Req13: Initialize from file
     public void initializeFromFile(String filePath) {

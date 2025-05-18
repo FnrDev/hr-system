@@ -1,9 +1,13 @@
 package GUI;
 
+import Logic.HR_System;
+import Logic.SystemManager;
 import javax.swing.*;
 import java.awt.*;
 
 public class MainLayoutFrame extends javax.swing.JFrame {
+     private HR_System system;
+
     
     private JPanel contentPanel;
     private EmployeesPanel employeesPanel;
@@ -12,6 +16,15 @@ public class MainLayoutFrame extends javax.swing.JFrame {
     private SettingsPanel settingsPanel;
     
     public MainLayoutFrame() {
+        try {
+            this.system = HR_System.loadData();
+            System.out.println("System loaded from file.");
+        } catch (Exception e) {
+            this.system = new HR_System();
+            System.out.println("New system created.");
+        }
+        SystemManager.getInstance().setSystem(this.system);
+        
        initComponents();
         if (PanelContent != null) {
             contentPanel = PanelContent;
@@ -212,7 +225,7 @@ public class MainLayoutFrame extends javax.swing.JFrame {
 
         // If user confirms, exit the application
         if (confirmed == JOptionPane.YES_OPTION) {
-            System.exit(0);
+            system.exitSystem();
         }
         // If user selects No, the dialog closes and nothing happens
     }//GEN-LAST:event_btnExitAppActionPerformed
