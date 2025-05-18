@@ -125,6 +125,7 @@ public class HR_System implements Serializable {
     public void exitSystem() {
         try {
             saveData();
+            System.exit(0);
         } catch(IOException e) {
             System.err.println("Error saving data: " + e.getMessage());
         }
