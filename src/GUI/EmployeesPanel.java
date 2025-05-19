@@ -438,7 +438,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
         // Create row data
         Object[] row = {
             emp.getFirstName() + " " + emp.getLastName(),
-            "Employee", // You may need to adjust this if you have position information
+            emp.getPosition(), // You may need to adjust this if you have position information
             departmentName,
             String.valueOf(emp.getGender()),
             payLevelStr,
