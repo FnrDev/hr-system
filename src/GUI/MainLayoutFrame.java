@@ -62,7 +62,6 @@ public class MainLayoutFrame extends javax.swing.JFrame {
         employeesTabBTN = new javax.swing.JButton();
         departmentsTabBTN = new javax.swing.JButton();
         payrollTabBTN = new javax.swing.JButton();
-        settingsTabBTN1 = new javax.swing.JButton();
 
         jCheckBox1.setText("jCheckBox1");
 
@@ -134,13 +133,6 @@ public class MainLayoutFrame extends javax.swing.JFrame {
             }
         });
 
-        settingsTabBTN1.setText("Settings");
-        settingsTabBTN1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                settingsTabBTN1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -151,7 +143,6 @@ public class MainLayoutFrame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(departmentsTabBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(payrollTabBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(settingsTabBTN1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(employeesTabBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1200, Short.MAX_VALUE)
                 .addComponent(PanelContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -171,10 +162,8 @@ public class MainLayoutFrame extends javax.swing.JFrame {
                         .addGap(28, 28, 28)
                         .addComponent(departmentsTabBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(28, 28, 28)
-                        .addComponent(payrollTabBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(settingsTabBTN1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(259, Short.MAX_VALUE))
+                        .addComponent(payrollTabBTN, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(332, Short.MAX_VALUE))
         );
 
         pack();
@@ -210,16 +199,6 @@ public class MainLayoutFrame extends javax.swing.JFrame {
             contentPanel.repaint();
         }
     }//GEN-LAST:event_payrollTabBTNActionPerformed
-
-    private void settingsTabBTN1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsTabBTN1ActionPerformed
-       System.out.println("Settings button clicked");
-        if (contentPanel != null) {
-            contentPanel.removeAll();
-            contentPanel.add(settingsPanel, BorderLayout.CENTER);
-            contentPanel.revalidate();
-            contentPanel.repaint();
-        }
-    }//GEN-LAST:event_settingsTabBTN1ActionPerformed
 
     private void btnExitAppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitAppActionPerformed
         // Show confirmation dialog
@@ -277,6 +256,5 @@ public class MainLayoutFrame extends javax.swing.JFrame {
     private javax.swing.JPanel navbar;
     private javax.swing.JLabel navbarTitle;
     private javax.swing.JButton payrollTabBTN;
-    private javax.swing.JButton settingsTabBTN1;
     // End of variables declaration//GEN-END:variables
 }
