@@ -226,11 +226,23 @@ public class DepartmentEmployeesDialog extends javax.swing.JDialog {
      * Handle Remove Head button click
      */
     private void removeHeadButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = employeeTable.getSelectedRow();
         if (department.getHeadOfDepartment() == null) {
             JOptionPane.showMessageDialog(this, 
                 "This department does not have a head to remove.", 
                 "No Head", 
                 JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        // Get employee ID from table
+        int employeeId = (int) tableModel.getValueAt(selectedRow, 0);
+        
+        if (department.getHeadOfDepartment().getEmployeeId() != employeeId) {
+            JOptionPane.showMessageDialog(this, 
+                "This is not a head of department.", 
+                "No Head", 
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
         

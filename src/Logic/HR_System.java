@@ -306,4 +306,5 @@ public class HR_System implements Serializable {
             return 0.0; // Or throw an exception if invalid
         }
     }
+    
 }
