@@ -1,6 +1,7 @@
 package Logic;
 import java.util.ArrayList;
 import java.io.*;
+import java.util.Scanner;
 
 public class HR_System implements Serializable {
     private final ArrayList<Department> departments = new ArrayList<>(); 
@@ -119,7 +120,68 @@ public class HR_System implements Serializable {
 
     //Req13: Initialize from file
     public void initializeFromFile(String filePath) {
+        try {
+            File file = new File(filePath);
+            Scanner scanner = new Scanner(file);
+
+            // Read number of departments
+            int numDepartments = Integer.parseInt(scanner.nextLine());
+
+            // Process each department
+            for (int i = 0; i < numDepartments; i++) {
+                // Read department details
+                String deptName = scanner.nextLine();
+                String deptLocation = scanner.nextLine();
+
+                // Create the department with default values for description and budget
+                // Using the existing addDepartment method
+                String defaultDescription = "Department created from startup file";
+                double defaultBudget = 100000.0;
+                addDepartment(deptName, defaultDescription, deptLocation, defaultBudget);
+
+                // Get the department we just created (last in the list)
+                Department department = departments.get(departments.size() - 1);
+
+                // Read number of employees in this department
+                int numEmployees = Integer.parseInt(scanner.nextLine());
+
+                // Process each employee
+                for (int j = 0; j < numEmployees; j++) {
+                    // Read employee details
+                    String firstName = scanner.nextLine();
+                    String lastName = scanner.nextLine();
+                    char gender = scanner.nextLine().charAt(0);
+                    String address = scanner.nextLine();
+                    int salaryScale = Integer.parseInt(scanner.nextLine());
+
+                    // Default values for fields not in the startup file
+                    String defaultPhone = "000-0000";
+                    String defaultHireDate = "01/01/2025";
+                    String defaultPosition = "Staff";
+
+                    // Create the employee using the existing addEmployee method
+                    addEmployee(firstName, lastName, gender, address, salaryScale, 
+                               defaultPhone, defaultHireDate, defaultPosition);
+
+                    // Get the employee we just created (last in the list)
+                    Employee employee = employees.get(employees.size() - 1);
+
+                    // Assign the employee to the department
+                    assignEmployeeToDepartment(employee.getEmployeeId(), department.getDepartmentId());
+                }
+            }
+
+            scanner.close();
+            System.out.println("Startup data loaded successfully.");
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Startup file not found: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error loading startup data: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
     
     //Req14: Exit system with save
     public void exitSystem() {

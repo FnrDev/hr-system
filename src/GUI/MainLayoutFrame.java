@@ -25,6 +25,13 @@ public class MainLayoutFrame extends javax.swing.JFrame {
         }
         SystemManager.getInstance().setSystem(this.system);
         
+        // load startup file to initalize pre-determined data
+        try {
+            system.initializeFromFile("startup.txt");
+        } catch (Exception e) {
+            System.out.println("Error loading startup data: " + e.getMessage());
+        }
+        
        initComponents();
         if (PanelContent != null) {
             contentPanel = PanelContent;
