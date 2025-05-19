@@ -241,7 +241,7 @@ public class DepartmentEmployeesDialog extends javax.swing.JDialog {
         if (department.getHeadOfDepartment().getEmployeeId() != employeeId) {
             JOptionPane.showMessageDialog(this, 
                 "This is not a head of department.", 
-                "No Head", 
+                "Wrong head of department", 
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
