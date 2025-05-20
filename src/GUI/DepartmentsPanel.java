@@ -6,6 +6,7 @@ package GUI;
 import Logic.Department;
 import Logic.Employee;
 import Logic.HR_System;
+import Logic.PanelCellEditor;
 import Logic.SystemManager;
 import java.awt.*;
 import java.util.ArrayList;
@@ -114,27 +115,20 @@ public class DepartmentsPanel extends javax.swing.JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, 
                     boolean isSelected, boolean hasFocus, int row, int column) {
                 if (value instanceof JPanel) {
-                    return (JPanel) value;
+                    JPanel panel = (JPanel) value;
+                    if (isSelected) {
+                        panel.setBackground(table.getSelectionBackground());
+                    } else {
+                        panel.setBackground(table.getBackground());
+                    }
+                    return panel;
                 }
-                // Return a default component if value is not a JPanel
-                JPanel emptyPanel = new JPanel();
-                return emptyPanel;
+                return new JPanel();
             }
         });
 
         // Set custom editor for the Actions column
-        departmentTable.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JTextField()) {
-            @Override
-            public Component getTableCellEditorComponent(JTable table, Object value, 
-                    boolean isSelected, int row, int column) {
-                if (value instanceof JPanel) {
-                    return (JPanel) value;
-                }
-                // Return a default component if value is not a JPanel
-                JPanel emptyPanel = new JPanel();
-                return emptyPanel;
-            }
-        });
+        departmentTable.getColumnModel().getColumn(5).setCellEditor(new PanelCellEditor());
 
         // Set column widths
         departmentTable.getColumnModel().getColumn(0).setPreferredWidth(200); // Name
@@ -150,39 +144,14 @@ public class DepartmentsPanel extends javax.swing.JPanel {
         // Set row height to accommodate buttons
         departmentTable.setRowHeight(40);
 
-        // Add mouse listener to handle button clicks
-        departmentTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int row = departmentTable.rowAtPoint(evt.getPoint());
-                int col = departmentTable.columnAtPoint(evt.getPoint());
-
-                if (col == 5 && row >= 0) { // Actions column
-                    // Get the component at that cell
-                    TableCellRenderer renderer = departmentTable.getCellRenderer(row, col);
-                    Component comp = departmentTable.prepareRenderer(renderer, row, col);
-
-                    if (comp instanceof JPanel) {
-                        JPanel panel = (JPanel) comp;
-                        // Calculate relative click position within the cell
-                        Rectangle cellRect = departmentTable.getCellRect(row, col, false);
-                        int x = evt.getX() - cellRect.x;
-                        int y = evt.getY() - cellRect.y;
-
-                        // Forward the click to the panel
-                        panel.dispatchEvent(new java.awt.event.MouseEvent(
-                            panel, evt.getID(), evt.getWhen(), evt.getModifiers(),
-                            x, y, evt.getClickCount(), evt.isPopupTrigger(), evt.getButton()
-                        ));
-                    }
-                }
-            }
-        });
+        // Remove the mouse listener hack! (No need to forward events)
+        // departmentTable.addMouseListener(...);
 
         // Force the table to repaint
         departmentTable.revalidate();
         departmentTable.repaint();
     }
+
     
     private void loadDepartments() {
         try {

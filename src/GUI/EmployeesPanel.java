@@ -4,9 +4,15 @@
  */
 package GUI;
 
+import Logic.PanelCellEditor;
+import GUI.AddEmployeeDialog;
+import Logic.Department;
 import Logic.Department;
 import Logic.Employee;
+import Logic.Employee;
 import Logic.HR_System;
+import Logic.HR_System;
+import Logic.SystemManager;
 import Logic.SystemManager;
 import java.awt.*;
 import java.util.ArrayList;
@@ -261,7 +267,6 @@ public class EmployeesPanel extends javax.swing.JPanel {
     // New methods for table functionality
     private void setupEmployeeTable() {
         // Set up the table model with column names
-        // Make sure the table is visible
         employeeTable.setVisible(true);
         tableScrollPane.setVisible(true);
 
@@ -274,27 +279,20 @@ public class EmployeesPanel extends javax.swing.JPanel {
             public Component getTableCellRendererComponent(JTable table, Object value, 
                     boolean isSelected, boolean hasFocus, int row, int column) {
                 if (value instanceof JPanel) {
-                    return (JPanel) value;
+                    JPanel panel = (JPanel) value;
+                    if (isSelected) {
+                        panel.setBackground(table.getSelectionBackground());
+                    } else {
+                        panel.setBackground(table.getBackground());
+                    }
+                    return panel;
                 }
-                // Return a default component if value is not a JPanel
-                JPanel emptyPanel = new JPanel();
-                return emptyPanel;
+                return new JPanel();
             }
         });
 
         // Set custom editor for the Actions column
-        employeeTable.getColumnModel().getColumn(5).setCellEditor(new DefaultCellEditor(new JTextField()) {
-            @Override
-            public Component getTableCellEditorComponent(JTable table, Object value, 
-                    boolean isSelected, int row, int column) {
-                if (value instanceof JPanel) {
-                    return (JPanel) value;
-                }
-                // Return a default component if value is not a JPanel
-                JPanel emptyPanel = new JPanel();
-                return emptyPanel;
-            }
-        });
+        employeeTable.getColumnModel().getColumn(5).setCellEditor(new PanelCellEditor());
 
         // Set column widths - increase the Actions column width
         employeeTable.getColumnModel().getColumn(0).setPreferredWidth(150); // Name
@@ -302,7 +300,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
         employeeTable.getColumnModel().getColumn(2).setPreferredWidth(150); // Department
         employeeTable.getColumnModel().getColumn(3).setPreferredWidth(80);  // Gender
         employeeTable.getColumnModel().getColumn(4).setPreferredWidth(100); // PayLevel
-        employeeTable.getColumnModel().getColumn(5).setPreferredWidth(200); // Actions - increased width
+        employeeTable.getColumnModel().getColumn(5).setPreferredWidth(200); // Actions
 
         // Prevent column resizing by the user to maintain our custom widths
         employeeTable.getTableHeader().setResizingAllowed(false);
@@ -314,6 +312,7 @@ public class EmployeesPanel extends javax.swing.JPanel {
         employeeTable.revalidate();
         employeeTable.repaint();
     }
+
     
     private void populateEmployeeTable() {
         debugSystemData();
