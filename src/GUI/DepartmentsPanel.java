@@ -311,6 +311,10 @@ private void viewDepartmentEmployees(Department dept) {
         );
 
         if (confirm == JOptionPane.YES_OPTION) {
+            if (departmentTable.isEditing()) {
+                departmentTable.getCellEditor().stopCellEditing();
+            }
+            System.out.println("Delete department id "+ dept.getDepartmentId());
             system.deleteDepartment(dept.getDepartmentId());
             JOptionPane.showMessageDialog(this, "Department deleted successfully");
             loadDepartments(); // Refresh the list

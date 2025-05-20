@@ -67,10 +67,7 @@ public class HR_System implements Serializable {
     }
     //Req8: Delete department
     public void deleteDepartment(int departmentId) {
-        Department dept = getDepartmentById(departmentId);
-        if(dept != null && dept.getEmployeeCount() == 0) {
-            departments.remove(dept);
-        }
+        departments.removeIf(d -> d.getDepartmentId() == departmentId);
     }
     //Req9: Delete employee
     public void deleteEmployee(int employeeId) {
