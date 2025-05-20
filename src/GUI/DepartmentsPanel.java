@@ -153,7 +153,7 @@ public class DepartmentsPanel extends javax.swing.JPanel {
     }
 
     
-    private void loadDepartments() {
+    public void loadDepartments() {
         try {
             // Clear existing rows
             tableModel.setRowCount(0);

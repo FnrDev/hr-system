@@ -181,6 +181,7 @@ public class MainLayoutFrame extends javax.swing.JFrame {
 
     private void departmentsTabBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departmentsTabBTNActionPerformed
         System.out.println("Departments button clicked");
+        departmentsPanel.loadDepartments();
         if (contentPanel != null) {
             contentPanel.removeAll();
             contentPanel.add(departmentsPanel, BorderLayout.CENTER);
